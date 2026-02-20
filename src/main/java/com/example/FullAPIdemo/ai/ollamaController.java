@@ -30,9 +30,17 @@ public class ollamaController {
 
     @PostMapping(value="/ollama/prompt")
     public Flux<String> ollamaPrompt(@RequestBody String prompt){
+        //get user history
+        //get prompt
+        //add to user history
+        //add to prompt context
+        //return answer as Message json
         return chatClient.prompt().
                 user(prompt).
                 stream().
                 content();
     }
+
+    //Mapping /chat/CHATID/messages
+    //https://codezup.com/building-real-time-chat-app-with-flutter/
 }
