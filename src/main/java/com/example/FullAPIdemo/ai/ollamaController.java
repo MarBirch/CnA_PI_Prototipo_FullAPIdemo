@@ -16,7 +16,7 @@ public class ollamaController {
     public ollamaController(OllamaChatModel chatModel){
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         this.chatClient = builder
-                .defaultSystem("You are an ai nutritional assistant.")
+                .defaultSystem("Voce é uma ia de assistente nutricional")
                 .build();
     }
 
@@ -28,8 +28,8 @@ public class ollamaController {
                 content();
     }
 
-    @PostMapping(value="/ollama/prompt")
-    public Flux<String> ollamaPrompt(@RequestBody String prompt){
+    @PostMapping(value="/prompt")
+    public String ollamaPrompt(@RequestBody String prompt){
         //get user history
         //get prompt
         //add to user history
@@ -37,7 +37,7 @@ public class ollamaController {
         //return answer as Message json
         return chatClient.prompt().
                 user(prompt).
-                stream().
+                call().
                 content();
     }
 

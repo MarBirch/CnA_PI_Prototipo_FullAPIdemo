@@ -12,8 +12,6 @@ public class Message {
     private int id;
 @Column
 private String message;
-@ForeignKey
-private String sender;
 @Column
 private DateTime timestamp;
 }
