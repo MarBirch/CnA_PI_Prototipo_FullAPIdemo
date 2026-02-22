@@ -25,7 +25,7 @@ public class OllamaController {
         this.chatClient = builder
                 .defaultSystem("Voce é uma IA de assostente nutricional")
                 .defaultAdvisors(
-                        //MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         new SimpleLoggerAdvisor()
                 )
                 .build();
