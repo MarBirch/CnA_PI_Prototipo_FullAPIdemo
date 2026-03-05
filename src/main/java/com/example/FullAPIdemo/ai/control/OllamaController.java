@@ -1,11 +1,18 @@
 package com.example.FullAPIdemo.ai.control;
 
 
+import com.example.FullAPIdemo.ai.model.NewChatRequest;
 import com.example.FullAPIdemo.ai.model.PromptRequest;
+import com.example.FullAPIdemo.database.model.Chat;
+import com.example.FullAPIdemo.database.model.User;
+import com.example.FullAPIdemo.database.repo.UserRepository;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +21,20 @@ import reactor.core.publisher.Flux;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/apiOllama")
 public class OllamaController {
+    @Autowired
+    private UserRepository uRepo;
+
     private final ChatClient chatClient;
 
     public OllamaController(ChatClient.Builder builder, ChatMemory chatMemory){
+
         this.chatClient = builder
                 .defaultSystem("Voce é uma IA de assostente nutricional")
                 .defaultAdvisors(
@@ -37,6 +50,23 @@ public class OllamaController {
                 user("how many calories are there in one strawberry").
                 stream().
                 content();
+    }
+
+    @PostMapping("/newChat")
+    public ResponseEntity<Output> newChat(@RequestBody @Valid NewChatRequest newChatRequest){
+        String username = newChatRequest.getUsername();
+        String prompt = newChatRequest.getPrompt();
+
+        List<User> userList = this.uRepo.findByUsernameIs(request.getUsername());
+        try{
+            Long id = userList.getFirst().getId();
+            Chat chat = new Chat();
+            chat.setUser(id);
+
+        } catch (NoSuchElementException e){
+            System.out.printf("Username doesn't exist");
+            return ResponseEntity.ok(new Output("username errorrr"));
+        }
     }
 
     @PostMapping("/prompt")

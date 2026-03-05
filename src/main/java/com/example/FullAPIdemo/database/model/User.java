@@ -2,6 +2,8 @@ package com.example.FullAPIdemo.database.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table
 public class User {
@@ -21,12 +23,31 @@ public class User {
     @Column
     private double height;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Chat> chats;
+
     public User() {
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
