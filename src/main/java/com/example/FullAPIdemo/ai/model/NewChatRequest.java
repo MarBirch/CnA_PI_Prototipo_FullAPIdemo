@@ -1,8 +1,9 @@
 package com.example.FullAPIdemo.ai.model;
 
 public class NewChatRequest {
-    private String username = '';
-    private String prompt = '';
+    private String username = "";
+    private String prompt = "";
+    private Long chatId;
 
     public String getUsername() {
         return username;
@@ -18,5 +19,13 @@ public class NewChatRequest {
 
     public void setPrompt(String prompt) {
         this.prompt = prompt;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 }

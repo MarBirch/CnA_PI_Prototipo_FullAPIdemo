@@ -2,10 +2,9 @@ package com.example.FullAPIdemo.database.control;
 
 import com.example.FullAPIdemo.database.model.CadastroRequest;
 import com.example.FullAPIdemo.database.model.LoginUser;
-import com.example.FullAPIdemo.database.repo.UserRepository;
+import com.example.FullAPIdemo.database.repository.UserRepository;
 import com.example.FullAPIdemo.database.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

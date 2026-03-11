@@ -15,7 +15,7 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Long user;
+    private User user;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
@@ -36,11 +36,11 @@ public class Chat {
         this.title = title;
     }
 
-    public Long getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Long user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
