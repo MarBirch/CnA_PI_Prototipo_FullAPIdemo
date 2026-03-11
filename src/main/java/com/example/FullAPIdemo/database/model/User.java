@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.database.model;
 
+import com.example.FullAPIdemo.ai.model.Chat;
 import jakarta.persistence.*;
 
 import java.util.List;

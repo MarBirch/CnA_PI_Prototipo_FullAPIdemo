@@ -1,12 +1,11 @@
-package com.example.FullAPIdemo.database.repository;
+package com.example.FullAPIdemo.ai.repository;
 
-import com.example.FullAPIdemo.database.model.Message;
+import com.example.FullAPIdemo.ai.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {

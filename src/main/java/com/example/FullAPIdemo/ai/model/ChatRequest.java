@@ -1,6 +1,6 @@
 package com.example.FullAPIdemo.ai.model;
 
-public class NewChatRequest {
+public class ChatRequest {
     private String username = "";
     private String prompt = "";
     private Long chatId;

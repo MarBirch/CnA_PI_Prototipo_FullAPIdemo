@@ -1,19 +1,17 @@
 package com.example.FullAPIdemo.ai.control;
 
 
-import com.example.FullAPIdemo.ai.model.NewChatRequest;
-import com.example.FullAPIdemo.database.model.Chat;
-import com.example.FullAPIdemo.database.model.Message;
-import com.example.FullAPIdemo.database.model.MessageList;
+import com.example.FullAPIdemo.ai.model.ChatRequest;
+import com.example.FullAPIdemo.ai.model.Chat;
+import com.example.FullAPIdemo.ai.model.Message;
 import com.example.FullAPIdemo.database.model.User;
-import com.example.FullAPIdemo.database.repository.ChatRepository;
-import com.example.FullAPIdemo.database.repository.MessageRepository;
+import com.example.FullAPIdemo.ai.repository.ChatRepository;
+import com.example.FullAPIdemo.ai.repository.MessageRepository;
 import com.example.FullAPIdemo.database.repository.UserRepository;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -24,7 +22,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -62,8 +59,8 @@ public class OllamaController {
     }
 
     @PostMapping("/chat/messages")
-    public ResponseEntity<String> listChat(@RequestBody @Valid NewChatRequest newChatRequest){
-        ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(newChatRequest.getChatId());
+    public ResponseEntity<String> listChat(@RequestBody @Valid ChatRequest chatRequest){
+        ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(chatRequest.getChatId());
 
 
         for(Message m : list){
@@ -80,8 +77,8 @@ public class OllamaController {
     }
 
     @PostMapping("/chatlist")
-    public ResponseEntity<String> listUserChats(@RequestBody @Valid NewChatRequest newChatRequest){
-        ArrayList<Chat> list = cRepo.findByUserId(newChatRequest.getChatId());
+    public ResponseEntity<String> listUserChats(@RequestBody @Valid ChatRequest chatRequest){
+        ArrayList<Chat> list = cRepo.findByUserId(chatRequest.getChatId());
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonList = mapper.writeValueAsString(list);
@@ -92,13 +89,13 @@ public class OllamaController {
     }
 
     @PostMapping("/chat")
-    public ResponseEntity<Output> newChat(@RequestBody @Valid NewChatRequest newChatRequest){
-        String username = newChatRequest.getUsername();
-        String prompt = newChatRequest.getPrompt();
-        Long chatId = newChatRequest.getChatId();
+    public ResponseEntity<Output> newChat(@RequestBody @Valid ChatRequest chatRequest){
+        String username = chatRequest.getUsername();
+        String prompt = chatRequest.getPrompt();
+        Long chatId = chatRequest.getChatId();
         LocalDateTime time = LocalDateTime.now();
 
-        List<User> userList = this.uRepo.findByUsernameIs(newChatRequest.getUsername());
+        List<User> userList = this.uRepo.findByUsernameIs(chatRequest.getUsername());
             try {
                 User u = userList.getFirst();
                 if(chatId == null) {

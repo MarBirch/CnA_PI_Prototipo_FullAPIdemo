@@ -1,8 +1,6 @@
-package com.example.FullAPIdemo.database.repository;
+package com.example.FullAPIdemo.ai.repository;
 
-import com.example.FullAPIdemo.database.model.CadastroRequest;
-import com.example.FullAPIdemo.database.model.Chat;
-import com.example.FullAPIdemo.database.model.Message;
+import com.example.FullAPIdemo.ai.model.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
 

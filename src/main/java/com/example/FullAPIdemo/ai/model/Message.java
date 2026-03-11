@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.database.model;
+package com.example.FullAPIdemo.ai.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
