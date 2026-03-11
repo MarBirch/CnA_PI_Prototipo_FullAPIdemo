@@ -4,6 +4,7 @@ package com.example.FullAPIdemo.ai.control;
 import com.example.FullAPIdemo.ai.model.NewChatRequest;
 import com.example.FullAPIdemo.database.model.Chat;
 import com.example.FullAPIdemo.database.model.Message;
+import com.example.FullAPIdemo.database.model.MessageList;
 import com.example.FullAPIdemo.database.model.User;
 import com.example.FullAPIdemo.database.repository.ChatRepository;
 import com.example.FullAPIdemo.database.repository.MessageRepository;
@@ -19,15 +20,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/apiOllama")
@@ -62,6 +61,36 @@ public class OllamaController {
                 content();
     }
 
+    @PostMapping("/chat/messages")
+    public ResponseEntity<String> listChat(@RequestBody @Valid NewChatRequest newChatRequest){
+        ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(newChatRequest.getChatId());
+
+
+        for(Message m : list){
+            //list.add(m.getContent());
+            System.out.println(m.getContent());
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonList = mapper.writeValueAsString(list);
+
+        System.out.println(jsonList);
+
+        return ResponseEntity.ok().body(jsonList);
+    }
+
+    @PostMapping("/chatlist")
+    public ResponseEntity<String> listUserChats(@RequestBody @Valid NewChatRequest newChatRequest){
+        ArrayList<Chat> list = cRepo.findByUserId(newChatRequest.getChatId());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonList = mapper.writeValueAsString(list);
+
+        System.out.println(jsonList);
+
+        return ResponseEntity.ok().body(jsonList);
+    }
+
     @PostMapping("/chat")
     public ResponseEntity<Output> newChat(@RequestBody @Valid NewChatRequest newChatRequest){
         String username = newChatRequest.getUsername();
@@ -89,6 +118,13 @@ public class OllamaController {
                             content();
 
                     System.out.println("finished generation\nresponse:\n\n" + response);
+
+                    Message res = new Message();
+                    res.setCreatedAt(time);
+                    res.setChat(chat);
+                    res.setRole("ASSISTANT");
+                    res.setContent(response);
+                    mRepo.save(msg);
 
                     Output output = new Output(response);
 

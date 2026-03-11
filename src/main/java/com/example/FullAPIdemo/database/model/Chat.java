@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,9 +16,11 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Message> messages;
 
     public Long getId() {

@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,8 @@ public class Message {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "chat_id") // Changed from "id" to avoid conflict
+    @JoinColumn(name = "chat_id")
+    @JsonIgnore
     private Chat chat;
 
     @PrePersist

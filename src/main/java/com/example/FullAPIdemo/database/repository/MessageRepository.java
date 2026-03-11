@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
     // Fetches history for a specific chat, ordered chronologically
-    @NativeQuery(value = "SELECT * FROM chat_messages WHERE chat_id = '?1' ORDER BY created_at ASC")
+    @NativeQuery(value = "SELECT * FROM messages WHERE chat_id = ?1 ORDER BY created_at ASC")
     ArrayList<Message> findByChatIdOrderByCreatedAtAsc(Long chatId);
 
     // Optional: Delete history if you need to reset a conversation
