@@ -1,6 +1,6 @@
-package com.example.FullAPIdemo.ai.repository;
+package com.example.FullAPIdemo.repository;
 
-import com.example.FullAPIdemo.ai.model.Chat;
+import com.example.FullAPIdemo.model.entity.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
 

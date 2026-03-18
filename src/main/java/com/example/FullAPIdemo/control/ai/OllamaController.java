@@ -1,13 +1,13 @@
-package com.example.FullAPIdemo.ai.control;
+package com.example.FullAPIdemo.control.ai;
 
 
-import com.example.FullAPIdemo.ai.model.ChatRequest;
-import com.example.FullAPIdemo.ai.model.Chat;
-import com.example.FullAPIdemo.ai.model.Message;
-import com.example.FullAPIdemo.database.model.User;
-import com.example.FullAPIdemo.ai.repository.ChatRepository;
-import com.example.FullAPIdemo.ai.repository.MessageRepository;
-import com.example.FullAPIdemo.database.repository.UserRepository;
+import com.example.FullAPIdemo.model.ai.pojo.ChatRequest;
+import com.example.FullAPIdemo.model.entity.Chat;
+import com.example.FullAPIdemo.model.entity.Message;
+import com.example.FullAPIdemo.model.entity.User;
+import com.example.FullAPIdemo.repository.ChatRepository;
+import com.example.FullAPIdemo.repository.MessageRepository;
+import com.example.FullAPIdemo.repository.UserRepository;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -23,7 +23,10 @@ import tools.jackson.databind.ObjectMapper;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/apiOllama")

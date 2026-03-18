@@ -1,6 +1,6 @@
-package com.example.FullAPIdemo.ai.repository;
+package com.example.FullAPIdemo.repository;
 
-import com.example.FullAPIdemo.ai.model.Message;
+import com.example.FullAPIdemo.model.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.stereotype.Repository;

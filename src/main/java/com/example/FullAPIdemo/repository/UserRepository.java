@@ -1,8 +1,8 @@
-package com.example.FullAPIdemo.database.repository;
+package com.example.FullAPIdemo.repository;
 
-import com.example.FullAPIdemo.database.model.CadastroRequest;
+import com.example.FullAPIdemo.model.pojo.CadastroRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.FullAPIdemo.database.model.User;
+import com.example.FullAPIdemo.model.entity.User;
 
 import java.util.List;
 

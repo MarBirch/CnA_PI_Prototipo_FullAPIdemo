@@ -1,9 +1,9 @@
-package com.example.FullAPIdemo.database.control;
+package com.example.FullAPIdemo.control;
 
-import com.example.FullAPIdemo.database.model.CadastroRequest;
-import com.example.FullAPIdemo.database.model.LoginUser;
-import com.example.FullAPIdemo.database.repository.UserRepository;
-import com.example.FullAPIdemo.database.model.User;
+import com.example.FullAPIdemo.model.pojo.CadastroRequest;
+import com.example.FullAPIdemo.model.pojo.LoginUser;
+import com.example.FullAPIdemo.repository.UserRepository;
+import com.example.FullAPIdemo.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

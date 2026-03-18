@@ -1,6 +1,5 @@
-package com.example.FullAPIdemo.database.model;
+package com.example.FullAPIdemo.model.entity;
 
-import com.example.FullAPIdemo.ai.model.Chat;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +13,9 @@ public class User {
 
     @Column
     private String username;
+
+    @Column
+    private String email;
 
     @Column
     private String password;
