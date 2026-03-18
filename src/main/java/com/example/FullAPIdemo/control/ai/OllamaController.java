@@ -134,6 +134,7 @@ public class OllamaController {
                     Chat chat = cRepo.getReferenceById(chatId);
                     Message msg = new Message();
                     msg.setCreatedAt(time);
+                    msg.setRole("USER");
                     msg.setChat(chat);
                     msg.setContent(prompt);
                     mRepo.save(msg);
