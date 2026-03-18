@@ -13,36 +13,28 @@ public class Cardapio {
 
     @Column
     private String ingrediente1;
-
     @Column
-    private String quantidadeIngrediente1;
+    private Long valor_ingrediente1;
 
     @Column
     private String ingrediente2;
-
     @Column
-    private String quantidadeIngrediente2;
+    private Long valor_ingrediente2;
 
     @Column
     private String ingrediente3;
-
     @Column
-    private String quantidadeIngrediente3;
+    private Long valor_ingrediente3;
 
     @Column
     private String ingrediente4;
-
     @Column
-    private String quantidadeIngrediente4;
+    private Long valor_ingrediente4;
 
     @Column
     private String ingrediente5;
-
     @Column
-    private String quantidadeIngrediente6;
-
-    @Column
-    private String password;
+    private Long valor_ingrediente5;
 
     @ManyToOne
     @JoinColumn(name = "marmiteria_id")

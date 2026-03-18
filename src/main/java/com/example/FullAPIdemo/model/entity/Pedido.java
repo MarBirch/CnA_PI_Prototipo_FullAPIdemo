@@ -10,6 +10,20 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
+    private Long valor;
+    @Column
+    private String quantidadeIngrediente1;
+
+    @Column
+    private String quantidadeIngrediente2;
+
+    @Column
+    private String quantidadeIngrediente3;
+    @Column
+    private String quantidadeIngrediente4;
+    @Column
+    private String quantidadeIngrediente5;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

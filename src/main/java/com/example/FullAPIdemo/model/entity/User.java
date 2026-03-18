@@ -26,6 +26,9 @@ public class User {
     @Column
     private double height;
 
+    @Column
+    private String cep;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Chat> chats;
 

@@ -19,6 +19,15 @@ public class Marmiteria {
     @Column
     private String password;
 
+    @Column
+    private String cep;
+
+    @Column
+    private String numero;
+
+    @Column
+    private boolean status;
+
     @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
     private List<Pedido> pedidos;
 
