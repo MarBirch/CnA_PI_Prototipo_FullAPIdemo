@@ -2,6 +2,7 @@ package com.example.FullAPIdemo.control.ai;
 
 
 import com.example.FullAPIdemo.model.ai.pojo.ChatRequest;
+import com.example.FullAPIdemo.model.ai.pojo.PromptRequest;
 import com.example.FullAPIdemo.model.entity.Chat;
 import com.example.FullAPIdemo.model.entity.Message;
 import com.example.FullAPIdemo.model.entity.User;
@@ -159,27 +160,38 @@ public class OllamaController {
     }
 
     @PostMapping("/prompt")
-    public ResponseEntity<Output> ollamaPrompt(@RequestBody @Valid Input input, @CookieValue (name = "X-CONV-ID", required = false) String convId){
+    public ResponseEntity<String> ollamaPrompt(@RequestBody @Valid PromptRequest promptRequest){
 
-        String conversationId = convId == null ? UUID.randomUUID().toString() : convId;
+        Long conversationId = promptRequest.getChatId();
+        String prompt = promptRequest.getPrompt();
+        LocalDateTime time = LocalDateTime.now();
+
+        Chat chat = cRepo.getReferenceById(conversationId);
+        Message msg = new Message();
+        msg.setCreatedAt(time);
+        msg.setRole("USER");
+        msg.setChat(chat);
+        msg.setContent(prompt);
+        mRepo.save(msg);
+
         System.out.println("generating...");
 
         var response = this.chatClient.prompt().
-                user(input.prompt()).
+                user(prompt).
                 advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId)).
                 call().
                 content();
 
-        ResponseCookie cookie = ResponseCookie.from("X-CONV-ID", conversationId)
-                .path("/")
-                .maxAge(3600)
-                .build();
+        Message res = new Message();
+        msg.setCreatedAt(time);
+        msg.setRole("ASSISTANT");
+        msg.setChat(chat);
+        msg.setContent(prompt);
+        mRepo.save(res);
 
         System.out.println("finished generation\nresponse:\n\n" + response);
 
-        Output output = new Output(response);
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(output);
+        return ResponseEntity.ok().body(response);
     }
 
     record Input(@NotNull String prompt){}
