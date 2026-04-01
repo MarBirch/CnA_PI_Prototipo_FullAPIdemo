@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.model.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,35 +12,15 @@ public class Cardapio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String ingrediente1;
-    @Column
-    private Long valor_ingrediente1;
+    @Column(nullable = false)
+    private String nome;
 
-    @Column
-    private String ingrediente2;
-    @Column
-    private Long valor_ingrediente2;
-
-    @Column
-    private String ingrediente3;
-    @Column
-    private Long valor_ingrediente3;
-
-    @Column
-    private String ingrediente4;
-    @Column
-    private Long valor_ingrediente4;
-
-    @Column
-    private String ingrediente5;
-    @Column
-    private Long valor_ingrediente5;
+    @OneToMany(mappedBy = "cardapio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Ingrediente> ingredientes;
 
     @ManyToOne
-    @JoinColumn(name = "marmiteria_id")
+    @JoinColumn(name = "marmiteria_id", nullable = false )
     @JsonIgnore
     private Marmiteria marmiteria;
-
-
 }

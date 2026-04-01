@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -29,12 +30,15 @@ public class Marmiteria {
     private boolean status;
 
     @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Pedido> pedidos;
 
     @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Cardapio> cardapios;
 
     @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Gastos> gastos;
 
 }

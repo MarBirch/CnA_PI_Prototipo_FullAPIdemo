@@ -12,6 +12,13 @@ public class User {
     private Long id;
 
     @Column
+    private String username;
+
+    @Column
+    private String password;
+
+
+    @Column
     private String nome;
 
     @Column
@@ -92,5 +99,21 @@ public class User {
 
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -15,7 +15,7 @@ public class Chat {
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 

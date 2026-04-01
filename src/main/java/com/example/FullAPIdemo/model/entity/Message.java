@@ -11,15 +11,17 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String role;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "chat_id")
+    @JoinColumn(name = "chat_id", nullable = false)
     @JsonIgnore
     private Chat chat;
 

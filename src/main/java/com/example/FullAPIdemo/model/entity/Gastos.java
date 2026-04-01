@@ -18,7 +18,7 @@ public class Gastos {
     private Double custo;
 
     @ManyToOne
-    @JoinColumn(name = "marmiteria_id")
+    @JoinColumn(name = "marmiteria_id", nullable = false)
     @JsonIgnore
     private Marmiteria marmiteria;
 
