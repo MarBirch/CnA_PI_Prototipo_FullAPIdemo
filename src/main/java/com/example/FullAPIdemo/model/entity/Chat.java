@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 public class Chat {
-
+//545564
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
