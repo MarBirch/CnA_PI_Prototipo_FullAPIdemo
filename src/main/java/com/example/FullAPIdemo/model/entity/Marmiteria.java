@@ -27,7 +27,7 @@ public class Marmiteria {
     private String numero;
 
     @Column
-    private boolean status;
+    private Boolean status;
 
     @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -3,6 +3,7 @@ package com.example.FullAPIdemo.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,15 @@ public class Pedido {
 
     @Column
     private Long valor;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
