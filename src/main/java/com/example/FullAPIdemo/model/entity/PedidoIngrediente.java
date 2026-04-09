@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Ingrediente")
-public class Ingrediente {
+@Table(name = "PedidoIngrediente")
+public class PedidoIngrediente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +20,26 @@ public class Ingrediente {
     private BigDecimal valorPorGramas;
 
     @Column(nullable = false)
+    private BigDecimal gramas;
+
+    @Column(nullable = false)
     private Integer posicao;
 
     @ManyToOne
-    @JoinColumn(name = "cardapio_id", nullable = false)
+    @JoinColumn(name = "pedido_id")
     @JsonIgnore
-    private Cardapio cardapio;
+    private Pedido pedido;
 
-    public Ingrediente() {
+    public PedidoIngrediente() {
     }
 
-    public Ingrediente(Long id, String nome, BigDecimal valorPorGramas, Integer posicao, Cardapio cardapio) {
+    public PedidoIngrediente(Long id, String nome, BigDecimal valorPorGramas, BigDecimal gramas, Integer posicao, Cardapio cardapio, Pedido pedido) {
         this.id = id;
         this.nome = nome;
         this.valorPorGramas = valorPorGramas;
+        this.gramas = gramas;
         this.posicao = posicao;
-        this.cardapio = cardapio;
+        this.pedido = pedido;
     }
 
     public Long getId() {
@@ -70,11 +74,19 @@ public class Ingrediente {
         this.posicao = posicao;
     }
 
-    public Cardapio getCardapio() {
-        return cardapio;
+    public Pedido getPedido() {
+        return pedido;
     }
 
-    public void setCardapio(Cardapio cardapio) {
-        this.cardapio = cardapio;
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    public BigDecimal getGramas() {
+        return gramas;
+    }
+
+    public void setGramas(BigDecimal gramas) {
+        this.gramas = gramas;
     }
 }

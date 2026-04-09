@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.model.pojo;
+package com.example.FullAPIdemo.model.dto;
 
 public class LoginUser {
     private String username;

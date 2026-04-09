@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.model.ai.pojo;
+package com.example.FullAPIdemo.model.ai.dto;
 
 public class PromptRequest {
     private String prompt;

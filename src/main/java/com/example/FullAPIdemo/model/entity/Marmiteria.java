@@ -12,6 +12,49 @@ public class Marmiteria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 18)
+    private String cnpj;
+
+    @Column(length = 20)
+    private String telefone;
+
+    @Column
+    private String email;
+
+    @Column
+    private String nome;
+
+    @Column
+    private String senha;
+
+    @Column
+    private String cep;
+
+    @Column
+    private String numero;
+
+    @Column
+    private Boolean status;
+
+    @Column(nullable = true)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Cardapio> cardapios;
+
+    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Gastos> gastos;
+
+    @PrePersist
+    protected void onCreate() { this.createdAt = LocalDateTime.now(); }
+
+
     public Long getId() {
         return id;
     }
@@ -116,46 +159,11 @@ public class Marmiteria {
         this.gastos = gastos;
     }
 
-    @Column(length = 18)
-    private String cnpj;
+    public Boolean getStatus() {
+        return status;
+    }
 
-    @Column(length = 20)
-    private String telefone;
-
-    @Column
-    private String email;
-
-    @Column
-    private String nome;
-
-    @Column
-    private String senha;
-
-    @Column
-    private String cep;
-
-    @Column
-    private String numero;
-
-    @Column
-    private Boolean status;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() { this.createdAt = LocalDateTime.now(); }
-
-    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Pedido> pedidos;
-
-    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Cardapio> cardapios;
-
-    @OneToMany(mappedBy = "marmiteria", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Gastos> gastos;
-
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 }

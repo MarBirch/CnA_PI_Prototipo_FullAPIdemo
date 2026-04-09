@@ -1,8 +1,8 @@
 package com.example.FullAPIdemo.control;
 
-import com.example.FullAPIdemo.model.entity.Chat;
+import com.example.FullAPIdemo.model.dto.PedidoResponse;
 import com.example.FullAPIdemo.model.entity.Pedido;
-import com.example.FullAPIdemo.model.pojo.LoginUser;
+import com.example.FullAPIdemo.model.dto.LoginUser;
 import com.example.FullAPIdemo.repository.PedidoRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +25,20 @@ public class PedidoController {
     private UserRepository uRepo;
 
     @PostMapping("/pedidos")
-    public ResponseEntity<String> listUserChats(@RequestBody @Valid LoginUser chatRequest){
+    public ResponseEntity<ArrayList<PedidoResponse>> listUserChats(@RequestBody @Valid LoginUser chatRequest){
         ArrayList<Pedido> list = pRepo.findByUserIdOrderByCreatedAtAsc(uRepo.findIdByUsername(chatRequest.getUsername()));
-
+        ArrayList<PedidoResponse> responseList = new ArrayList<PedidoResponse>();
+        for (Pedido pedido : list) {
+            System.out.println(pedido.getId());
+            PedidoResponse pedidoResponse = new PedidoResponse(pedido);
+            responseList.add(pedidoResponse);
+        }
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(list);
+        String jsonList = mapper.writeValueAsString(responseList);
 
         System.out.println(jsonList);
 
-        return ResponseEntity.ok().body(jsonList);
+        return ResponseEntity.ok().body(responseList);
     }
 
 }

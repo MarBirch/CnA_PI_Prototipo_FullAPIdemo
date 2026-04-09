@@ -65,22 +65,6 @@ public class User {
         this.id = id;
     }
 
-    public String getnome() {
-        return nome;
-    }
-
-    public void setnome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getsenha() {
-        return senha;
-    }
-
-    public void setsenha(String senha) {
-        this.senha = senha;
-    }
-
     public Double getPeso() {
         return peso;
     }
@@ -156,4 +140,6 @@ public class User {
     public void setCep(String cep) {
         this.cep = cep;
     }
+
+
 }

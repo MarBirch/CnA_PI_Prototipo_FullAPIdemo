@@ -21,7 +21,7 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.PENDENTE;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = true, updatable = false)
     private LocalDateTime dataPedido;
 
     @Column(nullable = false)
@@ -31,7 +31,6 @@ public class Pedido {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,7 +44,11 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Ingrediente> ingredientes;
+    private List<PedidoIngrediente> ingredientes;
+
+    @ManyToOne
+    @JoinColumn(name = "cardapio_id", nullable = false)
+    private Cardapio cardapio;
 
     public Long getId() {
         return id;
@@ -71,11 +74,43 @@ public class Pedido {
         this.user = user;
     }
 
-    public List<Ingrediente> getIngredientes() {
+    public List<PedidoIngrediente> getIngredientes() {
         return ingredientes;
     }
 
-    public void setIngredientes(List<Ingrediente> ingredientes) {
+    public void setIngredientes(List<PedidoIngrediente> ingredientes) {
         this.ingredientes = ingredientes;
+    }
+
+    public StatusPedido getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusPedido status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDataPedido() {
+        return dataPedido;
+    }
+
+    public void setDataPedido(LocalDateTime dataPedido) {
+        this.dataPedido = dataPedido;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Marmiteria getMarmiteria() {
+        return marmiteria;
+    }
+
+    public void setMarmiteria(Marmiteria marmiteria) {
+        this.marmiteria = marmiteria;
     }
 }

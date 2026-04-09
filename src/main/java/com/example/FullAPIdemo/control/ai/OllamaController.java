@@ -1,12 +1,12 @@
 package com.example.FullAPIdemo.control.ai;
 
 
-import com.example.FullAPIdemo.model.ai.pojo.ChatRequest;
-import com.example.FullAPIdemo.model.ai.pojo.PromptRequest;
+import com.example.FullAPIdemo.model.ai.dto.ChatRequest;
+import com.example.FullAPIdemo.model.ai.dto.PromptRequest;
 import com.example.FullAPIdemo.model.entity.Chat;
 import com.example.FullAPIdemo.model.entity.Message;
 import com.example.FullAPIdemo.model.entity.User;
-import com.example.FullAPIdemo.model.pojo.LoginUser;
+import com.example.FullAPIdemo.model.dto.LoginUser;
 import com.example.FullAPIdemo.repository.ChatRepository;
 import com.example.FullAPIdemo.repository.MessageRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
@@ -15,8 +15,6 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -28,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/apiOllama")

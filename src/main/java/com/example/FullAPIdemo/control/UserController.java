@@ -1,7 +1,7 @@
 package com.example.FullAPIdemo.control;
 
-import com.example.FullAPIdemo.model.pojo.CadastroRequest;
-import com.example.FullAPIdemo.model.pojo.LoginUser;
+import com.example.FullAPIdemo.model.dto.CadastroRequest;
+import com.example.FullAPIdemo.model.dto.LoginUser;
 import com.example.FullAPIdemo.repository.UserRepository;
 import com.example.FullAPIdemo.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class UserController {
             System.out.println(userList.getFirst().getUsername());
             System.out.println(userList.getFirst().getSenha());
             User u = userList.getFirst();
-            if (u.getSenha().equals(loginUser.getSenha())){
+            if (!u.getSenha().isEmpty() | u.getSenha().equals(loginUser.getSenha())){
                 System.out.println("logged");
                 return true;
             }else{
@@ -78,6 +78,9 @@ public class UserController {
         }
         catch (NoSuchElementException e){
             System.out.println("null");
+            return false;
+        } catch (NullPointerException e){
+            System.out.print("");
             return false;
         }
     }

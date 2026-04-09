@@ -23,4 +23,7 @@ public class Cardapio {
     @JoinColumn(name = "marmiteria_id", nullable = false )
     @JsonIgnore
     private Marmiteria marmiteria;
+
+    @OneToMany(mappedBy = "cardapio")
+    private List<Pedido> pedidos;
 }

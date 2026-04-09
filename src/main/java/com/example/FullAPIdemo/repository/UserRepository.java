@@ -1,9 +1,8 @@
 package com.example.FullAPIdemo.repository;
 
-import com.example.FullAPIdemo.model.pojo.CadastroRequest;
+import com.example.FullAPIdemo.model.dto.CadastroRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.FullAPIdemo.model.entity.User;
-import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
