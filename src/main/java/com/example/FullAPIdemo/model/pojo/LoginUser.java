@@ -2,7 +2,7 @@ package com.example.FullAPIdemo.model.pojo;
 
 public class LoginUser {
     private String username;
-    private String password;
+    private String senha;
 
     public String getUsername() {
         return username;
@@ -12,11 +12,11 @@ public class LoginUser {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

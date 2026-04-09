@@ -1,8 +1,11 @@
 package com.example.FullAPIdemo.model.entity;
 
+import com.example.FullAPIdemo.model.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -11,8 +14,15 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long valor;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valor;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status = StatusPedido.PENDENTE;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataPedido;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -36,11 +46,11 @@ public class Pedido {
         this.id = id;
     }
 
-    public Long getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Long valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 

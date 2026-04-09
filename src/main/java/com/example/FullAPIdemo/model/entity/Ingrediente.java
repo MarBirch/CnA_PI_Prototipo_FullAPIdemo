@@ -3,6 +3,8 @@ package com.example.FullAPIdemo.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "Ingrediente")
 public class Ingrediente {
@@ -14,8 +16,8 @@ public class Ingrediente {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
-    private Long valorPorGramas;
+    @Column(nullable = false, precision = 10, scale = 4)
+    private BigDecimal valorPorGramas;
 
     @Column(nullable = false)
     private Integer posicao;
@@ -33,7 +35,7 @@ public class Ingrediente {
     public Ingrediente() {
     }
 
-    public Ingrediente(Long id, String nome, Long valorPorGramas, Integer posicao, Cardapio cardapio, Pedido pedido) {
+    public Ingrediente(Long id, String nome, BigDecimal valorPorGramas, Integer posicao, Cardapio cardapio, Pedido pedido) {
         this.id = id;
         this.nome = nome;
         this.valorPorGramas = valorPorGramas;
@@ -58,11 +60,11 @@ public class Ingrediente {
         this.nome = nome;
     }
 
-    public Long getValorPorGramas() {
+    public BigDecimal getValorPorGramas() {
         return valorPorGramas;
     }
 
-    public void setValorPorGramas(Long valorPorGramas) {
+    public void setValorPorGramas(BigDecimal valorPorGramas) {
         this.valorPorGramas = valorPorGramas;
     }
 

@@ -15,10 +15,6 @@ public class User {
     private String username;
 
     @Column
-    private String password;
-
-
-    @Column
     private String nome;
 
     @Column
@@ -34,10 +30,10 @@ public class User {
     private String endereco;
 
     @Column
-    private Double weight;
+    private Double peso;
 
     @Column
-    private Double height;
+    private Double altura;
 
     @Column
     private String cep;
@@ -85,28 +81,20 @@ public class User {
         this.senha = senha;
     }
 
-    public Double getWeight() {
-        return weight;
+    public Double getPeso() {
+        return peso;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setPeso(Double peso) {
+        this.peso = peso;
     }
 
-    public Double getHeight() {
-        return height;
+    public Double getAltura() {
+        return altura;
     }
 
-    public void setHeight(Double height) {
-        this.height = height;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAltura(Double altura) {
+        this.altura = altura;
     }
 
     public String getUsername() {

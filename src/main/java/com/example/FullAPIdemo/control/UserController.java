@@ -41,7 +41,7 @@ public class UserController {
         List<User> userList = this.uRepo.findByUsernameIs(request.getUsername());
         try{
             System.out.println(userList.getFirst().getUsername());
-            System.out.println(userList.getFirst().getPassword());
+            System.out.println(userList.getFirst().getSenha());
             User nullTest = userList.getFirst();
             if (nullTest.getUsername().equals(request.getUsername())){
                 System.out.println("username");
@@ -52,8 +52,8 @@ public class UserController {
         }catch (NoSuchElementException e){
             System.out.println("execpotopn");
             System.out.println(request.getUsername());
-            System.out.println(request.getPassword());
-            uRepo.save(new User(request.getUsername(),request.getPassword()));
+            System.out.println(request.getSenha());
+            uRepo.save(new User(request.getUsername(),request.getSenha()));
             return "success";
         }
     }
@@ -61,13 +61,13 @@ public class UserController {
     @PostMapping("/login")
     public boolean Login(@RequestBody LoginUser loginUser) {
         System.out.println(loginUser.getUsername());
-        System.out.println(loginUser.getPassword());
+        System.out.println(loginUser.getSenha());
         List<User> userList = this.uRepo.findByUsernameIs(loginUser.getUsername());
         try{
             System.out.println(userList.getFirst().getUsername());
-            System.out.println(userList.getFirst().getPassword());
+            System.out.println(userList.getFirst().getSenha());
             User u = userList.getFirst();
-            if (u.getPassword().equals(loginUser.getPassword())){
+            if (u.getSenha().equals(loginUser.getSenha())){
                 System.out.println("logged");
                 return true;
             }else{
