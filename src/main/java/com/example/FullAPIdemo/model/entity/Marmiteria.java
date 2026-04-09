@@ -138,7 +138,7 @@ public class Marmiteria {
     private String numero;
 
     @Column
-    private boolean status;
+    private Boolean status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -6,6 +6,7 @@ import com.example.FullAPIdemo.model.ai.pojo.PromptRequest;
 import com.example.FullAPIdemo.model.entity.Chat;
 import com.example.FullAPIdemo.model.entity.Message;
 import com.example.FullAPIdemo.model.entity.User;
+import com.example.FullAPIdemo.model.pojo.LoginUser;
 import com.example.FullAPIdemo.repository.ChatRepository;
 import com.example.FullAPIdemo.repository.MessageRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
@@ -81,8 +82,8 @@ public class OllamaController {
     }
 
     @PostMapping("/chatlist")
-    public ResponseEntity<String> listUserChats(@RequestBody @Valid ChatRequest chatRequest){
-        ArrayList<Chat> list = cRepo.findByUserId(chatRequest.getChatId());
+    public ResponseEntity<String> listUserChats(@RequestBody @Valid LoginUser chatRequest){
+        ArrayList<Chat> list = cRepo.findByUserId(uRepo.findIdByUsername(chatRequest.getUsername()));
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonList = mapper.writeValueAsString(list);
