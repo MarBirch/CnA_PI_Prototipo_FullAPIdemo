@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.model.ai.dto;
+package com.example.FullAPIdemo.model.dto.ai;
 
 public class ChatRequest {
     private String username = "";

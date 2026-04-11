@@ -1,6 +1,6 @@
 package com.example.FullAPIdemo.model.dto;
 
-public class LoginUser {
+public class LoginRequest {
     private String username;
     private String senha;
 

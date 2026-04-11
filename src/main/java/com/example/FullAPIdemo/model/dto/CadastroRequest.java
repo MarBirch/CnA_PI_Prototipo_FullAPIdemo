@@ -1,6 +1,6 @@
 package com.example.FullAPIdemo.model.dto;
 
-public class CadastroRequest extends LoginUser{
+public class CadastroRequest extends LoginRequest {
     public String getAction() {
         return action;
     }

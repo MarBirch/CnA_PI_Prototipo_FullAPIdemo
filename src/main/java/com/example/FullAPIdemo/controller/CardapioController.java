@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.control;
+package com.example.FullAPIdemo.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

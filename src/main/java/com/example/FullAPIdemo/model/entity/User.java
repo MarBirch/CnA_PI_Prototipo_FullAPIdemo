@@ -11,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String username;
 
     @Column
@@ -44,8 +44,8 @@ public class User {
     public User() {
     }
 
-    public User(String nome, String senha) {
-        this.nome = nome;
+    public User(String username, String senha) {
+        this.username = username;
         this.senha = senha;
     }
 
@@ -81,16 +81,8 @@ public class User {
         this.altura = altura;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNome() {
@@ -107,10 +99,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
     }
 
     public void setSenha(String senha) {
@@ -141,5 +129,15 @@ public class User {
         this.cep = cep;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
 }
