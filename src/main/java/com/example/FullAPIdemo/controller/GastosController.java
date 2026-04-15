@@ -16,6 +16,8 @@ import java.util.Optional;
 public class GastosController {
     @Autowired
     GastosRepository gaRepo;
+
+    @Autowired
     MarmiteriaRepository marmiteriaRepo;
 
     @PostMapping("/inserir")

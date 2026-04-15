@@ -2,18 +2,25 @@ package com.example.FullAPIdemo.controller;
 
 import com.example.FullAPIdemo.model.dto.CadastroRequest;
 import com.example.FullAPIdemo.model.dto.LoginRequest;
+import com.example.FullAPIdemo.model.entity.Marmiteria;
+import com.example.FullAPIdemo.model.entity.User;
+import com.example.FullAPIdemo.repository.UserRepository;
 import com.example.FullAPIdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/apiUser")
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepo;
 
     //função de cadastro, não inclui variaveis alem de username e senha pq eu tive preguiça
     @PostMapping("/cadastro")
@@ -24,6 +31,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestBody @Valid LoginRequest request) {
         return userService.login(request);
+    }
+
+    @GetMapping("/buscar/{id}")
+    public Optional<User> buscarPorCodigo(@PathVariable(value = "id") Long id) {
+        return userRepo.findById(id);
     }
 }
 //    //- buscar users por parte inicial do nome - FEITO
