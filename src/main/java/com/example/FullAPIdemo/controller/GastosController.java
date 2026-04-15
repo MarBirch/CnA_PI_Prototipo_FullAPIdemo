@@ -1,8 +1,11 @@
 package com.example.FullAPIdemo.controller;
 
 import com.example.FullAPIdemo.model.entity.Gastos;
+import com.example.FullAPIdemo.model.entity.Marmiteria;
 import com.example.FullAPIdemo.repository.GastosRepository;
+import com.example.FullAPIdemo.repository.MarmiteriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,10 +16,21 @@ import java.util.Optional;
 public class GastosController {
     @Autowired
     GastosRepository gaRepo;
+    MarmiteriaRepository marmiteriaRepo;
 
     @PostMapping("/inserir")
-    public void inserirGastos(@RequestBody Gastos ga) {
+    public ResponseEntity<?> inserirGastos(@RequestBody Gastos ga) {
+
+        if (ga.getMarmiteria() == null || ga.getMarmiteria().getId() == null) {
+            return ResponseEntity.badRequest().body("Informe o id da marmiteria");
+        }
+
+        Marmiteria marmiteria = marmiteriaRepo.findById(ga.getMarmiteria().getId())
+                .orElseThrow(() -> new RuntimeException("Marmiteria não encontrada"));
+
+        ga.setMarmiteria(marmiteria);
         gaRepo.save(ga);
+        return ResponseEntity.status(201).body(ga);
     }
 
     @GetMapping("/todos")
