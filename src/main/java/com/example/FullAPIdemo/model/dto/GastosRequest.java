@@ -1,9 +1,5 @@
 package com.example.FullAPIdemo.model.dto;
 
-import com.example.FullAPIdemo.model.entity.Marmiteria;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -23,7 +19,7 @@ public class GastosRequest {
         return marmiteriaId;
     }
 
-    public void setMarmiteria_id(Long marmiteriaId) {
+    public void setMarmiteriaId(Long marmiteriaId) {
         this.marmiteriaId = marmiteriaId;
     }
 
