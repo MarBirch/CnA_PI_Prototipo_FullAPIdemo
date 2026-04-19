@@ -1,47 +1,94 @@
 package com.example.FullAPIdemo.controller;
 
 import com.example.FullAPIdemo.model.entity.Gastos;
+import com.example.FullAPIdemo.model.entity.Marmiteria;
 import com.example.FullAPIdemo.repository.GastosRepository;
+import com.example.FullAPIdemo.repository.MarmiteriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping ("/apiGastos")
+@RequestMapping("/apiGastos")
+@CrossOrigin(origins = "*")
 public class GastosController {
+
     @Autowired
     GastosRepository gaRepo;
 
+    @Autowired
+    MarmiteriaRepository marmiteriaRepo;
+
     @PostMapping("/inserir")
-    public void inserirGastos(@RequestBody Gastos ga) {
-        gaRepo.save(ga);
+    public ResponseEntity<?> inserirGastos(@RequestBody Gastos ga) {
+        Long marmiteriaId = ga.getMarmiteria().getId();
+
+        Optional<Marmiteria> marmiteria = marmiteriaRepo.findById(marmiteriaId);
+        if (marmiteria.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("Marmiteria com id " + marmiteriaId + " não encontrada.");
+        }
+
+        ga.setMarmiteria(marmiteria.get());
+        return ResponseEntity.status(201).body(gaRepo.save(ga));
     }
 
     @GetMapping("/todos")
-    public List<Gastos> buscarTodosGastoss() {
-        return gaRepo.findAll();
+    public List<Gastos> buscarTodos(@RequestParam Long marmiteriaId) {
+        return gaRepo.findByMarmiteriaId(marmiteriaId);
     }
 
-    @GetMapping("/busgar/{codigo}")
-    public Optional<Gastos> buscarPorCodigo(@PathVariable(value = "id") Long id) {
-        return gaRepo.findById(id);
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<Gastos> buscarPorId(@PathVariable Long id) {
+        return gaRepo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/remover/{id}")
-    public void removerPorCodigo(@PathVariable(value = "id") Long id) {
-        gaRepo.deleteById(id);
-    }
+    @GetMapping("/filtrar")
+    public List<Gastos> filtrar(
+            @RequestParam Long marmiteriaId,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
 
-    @DeleteMapping("/remover")
-    public void removerPorObj (@RequestBody Gastos ga) {
-        gaRepo.delete(ga);
+        if (categoria != null && inicio != null && fim != null) {
+            return gaRepo.findByMarmiteriaIdAndCategoriaIgnoreCaseAndDataBetween(
+                    marmiteriaId, categoria, inicio, fim);
+        } else if (categoria != null) {
+            return gaRepo.findByMarmiteriaIdAndCategoriaIgnoreCase(marmiteriaId, categoria);
+        } else if (inicio != null && fim != null) {
+            return gaRepo.findByMarmiteriaIdAndDataBetween(marmiteriaId, inicio, fim);
+        }
+        return gaRepo.findByMarmiteriaId(marmiteriaId);
     }
 
     @PutMapping("/atualizar")
-    public void atualizarGastos(@RequestBody Gastos ga) {
-        this.gaRepo.save(ga);
+    public ResponseEntity<?> atualizarGastos(@RequestBody Gastos ga) {
+        if (ga.getId() == null || !gaRepo.existsById(ga.getId())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // preserva a marmiteria original se não vier no body
+        Gastos existente = gaRepo.findById(ga.getId()).get();
+        if (ga.getMarmiteria() == null) {
+            ga.setMarmiteria(existente.getMarmiteria());
+        }
+
+        return ResponseEntity.ok(gaRepo.save(ga));
     }
 
+    @DeleteMapping("/remover/{id}")
+    public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
+        if (!gaRepo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        gaRepo.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
