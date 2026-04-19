@@ -25,8 +25,8 @@ public class MarmiteriaController {
     }
 
     @GetMapping("/busmar/{codigo}")
-    public Optional<Marmiteria> buscarPorCodigo(@PathVariable(value = "id") Long id) {
-        return maRepo.findById(id);
+    public Marmiteria buscarPorCodigo(@PathVariable(value = "id") Long id) {
+        return maRepo.getById(id);
     }
 
     @DeleteMapping("/remover/{id}")

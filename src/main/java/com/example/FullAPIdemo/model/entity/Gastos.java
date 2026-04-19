@@ -28,6 +28,16 @@ public class Gastos {
     @JsonIgnore
     private Marmiteria marmiteria;
 
+    public Gastos() {
+    }
+
+    public Gastos(Double custo, String categoria, LocalDate data, String observacao, Marmiteria marmiteria) {
+        this.custo = custo;
+        this.categoria = categoria;
+        this.data = data;
+        this.observacao = observacao;
+        this.marmiteria = marmiteria;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

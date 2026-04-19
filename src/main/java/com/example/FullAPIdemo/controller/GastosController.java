@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.controller;
 
+import com.example.FullAPIdemo.model.dto.GastosRequest;
 import com.example.FullAPIdemo.model.entity.Gastos;
 import com.example.FullAPIdemo.model.entity.Marmiteria;
 import com.example.FullAPIdemo.repository.GastosRepository;
@@ -9,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -25,17 +28,18 @@ public class GastosController {
     MarmiteriaRepository marmiteriaRepo;
 
     @PostMapping("/inserir")
-    public ResponseEntity<?> inserirGastos(@RequestBody Gastos ga) {
-        Long marmiteriaId = ga.getMarmiteria().getId();
+    public ResponseEntity<?> inserirGastos(@RequestBody @Valid GastosRequest ga) {
+        Long marmiteriaId = ga.getMarmiteriaId();
+        System.out.println(marmiteriaId.toString());
+        Marmiteria marmiteria = marmiteriaRepo.getReferenceById(marmiteriaId);
+//        if (marmiteria.isEmpty()) {
+//            return ResponseEntity.badRequest()
+//                    .body("Marmiteria com id " + marmiteriaId + " não encontrada.");
+//        }
+        Gastos gastos = new Gastos(ga.getCusto(), ga.getCategoria(), ga.getData(), ga.getObservacao(),marmiteria);
 
-        Optional<Marmiteria> marmiteria = marmiteriaRepo.findById(marmiteriaId);
-        if (marmiteria.isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body("Marmiteria com id " + marmiteriaId + " não encontrada.");
-        }
-
-        ga.setMarmiteria(marmiteria.get());
-        return ResponseEntity.status(201).body(gaRepo.save(ga));
+        //ga.setMarmiteria(marmiteria);
+        return ResponseEntity.status(201).body(gaRepo.save(gastos));
     }
 
     @GetMapping("/todos")
