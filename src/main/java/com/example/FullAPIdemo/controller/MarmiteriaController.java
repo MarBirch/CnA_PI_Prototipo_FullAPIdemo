@@ -24,7 +24,7 @@ public class MarmiteriaController {
         return maRepo.findAll();
     }
 
-    @GetMapping("/busmar/{codigo}")
+    @GetMapping("/buscar/{id}")
     public Marmiteria buscarPorCodigo(@PathVariable(value = "id") Long id) {
         return maRepo.getById(id);
     }

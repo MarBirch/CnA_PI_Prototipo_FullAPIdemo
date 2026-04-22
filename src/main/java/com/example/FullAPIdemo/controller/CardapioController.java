@@ -23,7 +23,7 @@ public class CardapioController {
         return caRepo.findAll();
     }
 
-    @GetMapping("/buscar/{codigo}")
+    @GetMapping("/buscar/{id}/")
     public Optional<Cardapio> buscarPorCodigo(@PathVariable(value = "id") Long id) {
         return caRepo.findById(id);
     }
