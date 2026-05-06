@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CardapioRepository extends JpaRepository<Cardapio, Long> {
+    List<Cardapio> findByMarmiteriaId(Long marmiteriaId);
 }
