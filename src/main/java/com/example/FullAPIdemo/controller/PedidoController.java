@@ -9,6 +9,8 @@ import com.example.FullAPIdemo.model.entity.PedidoIngrediente;
 import com.example.FullAPIdemo.repository.CardapioRepository;
 import com.example.FullAPIdemo.repository.MarmiteriaRepository;
 import com.example.FullAPIdemo.repository.PedidoRepository;
+import com.example.FullAPIdemo.service.CardapioService;
+import com.example.FullAPIdemo.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,61 +24,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/apiPedido")
 @CrossOrigin(origins = "*")
 public class PedidoController {
-
     @Autowired
-    PedidoRepository pRepo;
-
-    @Autowired
-    CardapioRepository caRepo;
-
-    @Autowired
-    MarmiteriaRepository maRepo;
+    PedidoService pedidoService;
 
     @GetMapping("/todos")
     public ResponseEntity<List<PedidoResponse>> buscarPorMarmiteria(@RequestParam Long marmiteriaId) {
-        List<Pedido> pedidos = pRepo.findByMarmiteriaId(marmiteriaId);
-        List<PedidoResponse> resp = pedidos.stream().map(PedidoResponse::new).collect(Collectors.toList());
-        return ResponseEntity.ok(resp);
+        return pedidoService.buscarPorMarmiteria(marmiteriaId);
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<?> inserirPedido(@RequestBody PedidoRequest req) {
-        Optional<Cardapio> cardapioOpt = caRepo.findById(req.getCardapioId());
-        if (cardapioOpt.isEmpty()) return ResponseEntity.badRequest().body("Cardápio não encontrado.");
-
-        Cardapio cardapio = cardapioOpt.get();
-        Marmiteria marmiteria = cardapio.getMarmiteria();
-
-        Pedido pedido = new Pedido();
-        pedido.setNomeCliente(req.getNomeCliente());
-        pedido.setCardapio(cardapio);
-        pedido.setMarmiteria(marmiteria);
-        pedido.setValor(BigDecimal.ZERO);
-
-        List<PedidoIngrediente> ingredientes = req.getIngredientes().stream().map(i -> {
-            PedidoIngrediente pi = new PedidoIngrediente();
-            pi.setNome(i.getNome());
-            pi.setValorPorGramas(i.getValorPorGramas());
-            pi.setGramas(i.getGramas());
-            pi.setPosicao(i.getPosicao());
-            pi.setPedido(pedido);
-            return pi;
-        }).collect(Collectors.toList());
-
-        pedido.setIngredientes(ingredientes);
-
-        BigDecimal total = ingredientes.stream()
-                .map(i -> i.getValorPorGramas().multiply(i.getGramas()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        pedido.setValor(total);
-
-        return ResponseEntity.status(201).body(new PedidoResponse(pRepo.save(pedido)));
+    public ResponseEntity<?> inserirPedido(@RequestBody PedidoRequest req) {return pedidoService.inserirPedido(req);
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
-        if (!pRepo.existsById(id)) return ResponseEntity.notFound().build();
-        pRepo.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return pedidoService.removerPorId(id);
     }
 }
