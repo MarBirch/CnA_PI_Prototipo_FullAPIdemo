@@ -2,14 +2,11 @@ package com.example.FullAPIdemo.controller.ai;
 
 import com.example.FullAPIdemo.model.dto.ai.ChatRequest;
 import com.example.FullAPIdemo.model.dto.ai.PromptRequest;
-import com.example.FullAPIdemo.model.entity.Chat;
-import com.example.FullAPIdemo.model.entity.Message;
-import com.example.FullAPIdemo.model.entity.User;
 import com.example.FullAPIdemo.model.dto.LoginRequest;
 import com.example.FullAPIdemo.repository.ChatRepository;
 import com.example.FullAPIdemo.repository.MessageRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
-import com.example.FullAPIdemo.service.OllamaService;
+import com.example.FullAPIdemo.service.ai.OllamaService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -18,13 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import tools.jackson.databind.ObjectMapper;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/apiOllama")
@@ -50,7 +43,7 @@ public class OllamaController {
                         "Regras:" +
                         "- Não halucine" +
                         "- Responda somente perguntas sobre nutrição" +
-                        "- Respanda em um json" +
+                        "- Responda em um json" +
                         "- Revise sua resposta quando terminar sua geração e verifique se a informação condiz")
                 .defaultAdvisors(
                         MessageChatMemoryAdvisor.builder(chatMemory).build(),
