@@ -34,12 +34,31 @@ public class PedidoService {
     CardapioRepository caRepo;
 
     @Autowired
+    UserRepository uRepo;
+
+    @Autowired
     MarmiteriaRepository maRepo;
 
     public ResponseEntity<List<PedidoResponse>> buscarPorMarmiteria(@RequestParam Long marmiteriaId) {
         List<Pedido> pedidos = pRepo.findByMarmiteriaId(marmiteriaId);
         List<PedidoResponse> resp = pedidos.stream().map(PedidoResponse::new).collect(Collectors.toList());
         return ResponseEntity.ok(resp);
+    }
+
+    public ResponseEntity<List<PedidoResponse>> listUserChats(@RequestBody @Valid LoginRequest chatRequest){
+        List<Pedido> list = pRepo.findByUserIdOrderByCreatedAtAsc(uRepo.findIdByUsername(chatRequest.getUsername()));
+        List<PedidoResponse> responseList = new ArrayList<>();
+        for (Pedido pedido : list) {
+            System.out.println(pedido.getId());
+            PedidoResponse pedidoResponse = new PedidoResponse(pedido);
+            responseList.add(pedidoResponse);
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonList = mapper.writeValueAsString(responseList);
+
+        System.out.println(jsonList);
+
+        return ResponseEntity.ok().body(responseList);
     }
 
     public ResponseEntity<?> inserirPedido(@RequestBody PedidoRequest req) {

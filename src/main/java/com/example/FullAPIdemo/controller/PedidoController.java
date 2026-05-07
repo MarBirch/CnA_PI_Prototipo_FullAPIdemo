@@ -1,5 +1,6 @@
 package com.example.FullAPIdemo.controller;
 
+import com.example.FullAPIdemo.model.dto.LoginRequest;
 import com.example.FullAPIdemo.model.dto.PedidoRequest;
 import com.example.FullAPIdemo.model.dto.PedidoResponse;
 import com.example.FullAPIdemo.model.entity.Cardapio;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,11 @@ public class PedidoController {
     @GetMapping("/todos")
     public ResponseEntity<List<PedidoResponse>> buscarPorMarmiteria(@RequestParam Long marmiteriaId) {
         return pedidoService.buscarPorMarmiteria(marmiteriaId);
+    }
+
+    @PostMapping("/pedidos")
+    public ResponseEntity<List<PedidoResponse>> listUserChats(@RequestBody @Valid LoginRequest chatRequest){
+        return pedidoService.listUserChats(chatRequest);
     }
 
     @PostMapping("/inserir")
