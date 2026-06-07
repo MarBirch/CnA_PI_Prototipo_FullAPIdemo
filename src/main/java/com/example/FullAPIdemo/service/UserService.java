@@ -40,17 +40,30 @@ public class UserService {
         }}
 
     public ResponseEntity<String> cadastrar(@RequestBody @Valid CadastroRequest request) {
-        System.out.println("request" + request.getUsername());
-        if (usernameExists(request.getUsername())){
+        System.out.println("request: " + request.getUsername());
+
+        if (usernameExists(request.getUsername())) {
             System.out.println("username existe");
-            return ResponseEntity.ok().body("username ja existe");
-        } else{
-                System.out.println("cadastrando...");
-                System.out.println(request.getUsername());
-                System.out.println(request.getSenha());
-                //salvando usuario
-                uRepo.save(new User(request.getUsername(), request.getSenha()));
-                return ResponseEntity.ok().body("usuario cadastrado");}
+            return ResponseEntity.ok().body("username already exists");
+        }
+
+        System.out.println("cadastrando...");
+
+        User u = new User(request.getUsername(), request.getSenha());
+
+        // Campos opcionais — só atribui se o Flutter enviou algo
+        if (request.getNome()     != null) u.setNome(request.getNome());
+        if (request.getSenha()     != null) u.setSenha(request.getSenha());
+        if (request.getEmail()    != null) u.setEmail(request.getEmail());
+        if (request.getCelular()  != null) u.setCelular(request.getCelular());
+        if (request.getEndereco() != null) u.setEndereco(request.getEndereco());
+        if (request.getCep()      != null) u.setCep(request.getCep());
+        if (request.getPeso()     != null) u.setPeso(request.getPeso());
+        if (request.getAltura()   != null) u.setAltura(request.getAltura());
+
+        uRepo.save(u);
+
+        return ResponseEntity.ok().body("success");
     }
 
     public Boolean usernameExists(String username){

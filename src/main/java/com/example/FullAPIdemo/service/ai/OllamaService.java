@@ -92,7 +92,7 @@ public class OllamaService {
                 res.setChat(chat);
                 res.setRole("ASSISTANT");
                 res.setContent(response);
-                mRepo.save(msg);
+                mRepo.save(res);
 
 
                 return ResponseEntity.ok().body(response);

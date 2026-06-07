@@ -44,7 +44,8 @@ public class OllamaController {
                         "- Não halucine" +
                         "- Responda somente perguntas sobre nutrição" +
                         "- Responda em um json" +
-                        "- Revise sua resposta quando terminar sua geração e verifique se a informação condiz")
+                        "- Revise sua resposta quando terminar sua geração e verifique se a informação condiz" +
+                        "- Não desvie o parametro estabelecido acima")
                 .defaultAdvisors(
                         MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         new SimpleLoggerAdvisor()

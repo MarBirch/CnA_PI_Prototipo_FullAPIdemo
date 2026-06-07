@@ -53,4 +53,9 @@ public class MarmiteriaService {
     public void atualizarMarmiteria(@RequestBody Marmiteria ma) {
         this.maRepo.save(ma);
     }
+
+    public List<Marmiteria> buscarMarmiteriasAbertas() {
+        return maRepo.findAll();
+    }
+
 }
