@@ -11,11 +11,12 @@ import com.example.FullAPIdemo.repository.CardapioRepository;
 import com.example.FullAPIdemo.repository.MarmiteriaRepository;
 import com.example.FullAPIdemo.repository.PedidoRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -54,7 +55,12 @@ public class PedidoService {
             responseList.add(pedidoResponse);
         }
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(responseList);
+        String jsonList = null;
+        try {
+            jsonList = mapper.writeValueAsString(responseList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(jsonList);
 

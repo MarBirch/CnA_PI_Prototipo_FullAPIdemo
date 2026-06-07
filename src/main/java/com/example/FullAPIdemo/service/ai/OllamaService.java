@@ -9,13 +9,14 @@ import com.example.FullAPIdemo.model.entity.User;
 import com.example.FullAPIdemo.repository.ChatRepository;
 import com.example.FullAPIdemo.repository.MessageRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -42,7 +43,12 @@ public class OllamaService {
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(list);
+        String jsonList = null;
+        try {
+            jsonList = mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(jsonList);
 
@@ -53,7 +59,12 @@ public class OllamaService {
         ArrayList<Chat> list = cRepo.findByUserId(uRepo.findIdByUsername(chatRequest.getUsername()));
 
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(list);
+        String jsonList = null;
+        try {
+            jsonList = mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(jsonList);
 
@@ -146,10 +157,10 @@ public class OllamaService {
                 content();
 
         Message res = new Message();
-        msg.setCreatedAt(time);
-        msg.setRole("ASSISTANT");
-        msg.setChat(chat);
-        msg.setContent(prompt);
+        res.setCreatedAt(time);
+        res.setRole("ASSISTANT");
+        res.setChat(chat);
+        res.setContent(prompt);
         mRepo.save(res);
 
         System.out.println("finished generation\nresponse:\n\n" + response);
