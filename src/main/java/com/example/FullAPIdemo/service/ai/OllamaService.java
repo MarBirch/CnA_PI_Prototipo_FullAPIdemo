@@ -35,7 +35,7 @@ public class OllamaService {
 
     public ResponseEntity<String> listChat(@RequestBody @Valid ChatRequest chatRequest){
         ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(chatRequest.getChatId());
-        
+
         for(Message m : list){
             //list.add(m.getContent());
             System.out.println(m.getContent());
