@@ -1,12 +1,10 @@
 package com.example.FullAPIdemo.service;
 
+import com.example.FullAPIdemo.model.StatusPedido;
 import com.example.FullAPIdemo.model.dto.LoginRequest;
 import com.example.FullAPIdemo.model.dto.PedidoRequest;
 import com.example.FullAPIdemo.model.dto.PedidoResponse;
-import com.example.FullAPIdemo.model.entity.Cardapio;
-import com.example.FullAPIdemo.model.entity.Marmiteria;
-import com.example.FullAPIdemo.model.entity.Pedido;
-import com.example.FullAPIdemo.model.entity.PedidoIngrediente;
+import com.example.FullAPIdemo.model.entity.*;
 import com.example.FullAPIdemo.repository.CardapioRepository;
 import com.example.FullAPIdemo.repository.MarmiteriaRepository;
 import com.example.FullAPIdemo.repository.PedidoIngredienteRepository;
@@ -70,8 +68,10 @@ public class PedidoService {
         Marmiteria marmiteria = cardapio.getMarmiteria();
 
         Pedido pedido = new Pedido();
-        pedido.setNomeCliente(req.getNomeCliente());
-        pedido.setUser(uRepo.findByUsername(req.getNomeCliente()));
+        User user = uRepo.findById(req.getUserId())
+                .orElseThrow(() -> new RuntimeException("User não encontrado: " + req.getUserId()));
+        pedido.setUser(user);
+        pedido.setNomeCliente(null);
         pedido.setCardapio(cardapio);
         pedido.setMarmiteria(marmiteria);
         pedido.setValor(BigDecimal.ZERO);
@@ -145,5 +145,18 @@ public class PedidoService {
         if (!pRepo.existsById(id)) return ResponseEntity.notFound().build();
         pRepo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<?> atualizarStatus(Long id, String status) {
+        Optional<Pedido> opt = pRepo.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        try {
+            StatusPedido novoStatus = StatusPedido.valueOf(status);
+            Pedido pedido = opt.get();
+            pedido.setStatus(novoStatus);
+            return ResponseEntity.ok(new PedidoResponse(pRepo.save(pedido)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Status inválido: " + status);
+        }
     }
 }

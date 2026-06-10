@@ -47,4 +47,10 @@ public class PedidoController {
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         return pedidoService.removerPorId(id);
     }
+
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<?> atualizarStatus(@PathVariable Long id, @RequestParam String status) {
+        return pedidoService.atualizarStatus(id, status);
+    }
 }
+

@@ -5,12 +5,12 @@ import java.util.List;
 
 public class PedidoRequest {
 
-    private String nomeCliente;
+    private Long userId;
     private Long cardapioId;
     private List<IngredienteItem> ingredientes;
 
-    public String getNomeCliente() { return nomeCliente; }
-    public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public Long getCardapioId() { return cardapioId; }
     public void setCardapioId(Long cardapioId) { this.cardapioId = cardapioId; }

@@ -38,6 +38,11 @@ public class GastosController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {return gastosService.filtrar(marmiteriaId, categoria, inicio, fim);
     }
 
+    @GetMapping("/todos")
+    public List<Gastos> buscarTodos(@RequestParam Long marmiteriaId){
+        return gastosService.buscarTodos(marmiteriaId);
+    }
+
     @PutMapping("/atualizar")
     public ResponseEntity<?> atualizarGastos(@RequestBody Gastos ga) {
         return gastosService.atualizarGastos(ga);

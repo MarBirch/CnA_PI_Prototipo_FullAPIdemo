@@ -36,12 +36,12 @@ public class Pedido {
         this.createdAt = LocalDateTime.now();
     }
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "marmiteria_id", nullable = false)
     @JsonIgnore
     private Marmiteria marmiteria;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = true)
     @JsonIgnore
     private User user;
@@ -49,7 +49,7 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<PedidoIngrediente> ingredientes;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "cardapio_id", nullable = false)
     @JsonIgnore
     private Cardapio cardapio;

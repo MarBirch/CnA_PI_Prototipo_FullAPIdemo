@@ -10,6 +10,7 @@ import java.util.List;
 public class PedidoResponse {
 
     private Long id;
+    private Long userId;
     private String nomeCliente;
     private BigDecimal valor;
     private String status;
@@ -20,7 +21,8 @@ public class PedidoResponse {
 
     public PedidoResponse(Pedido pedido) {
         this.id = pedido.getId();
-        this.nomeCliente = pedido.getNomeCliente();
+        this.userId = pedido.getUser() != null ? pedido.getUser().getId() : null;
+        this.nomeCliente = pedido.getUser() != null ? pedido.getUser().getNome() : pedido.getNomeCliente();
         this.valor = pedido.getValor();
         this.status = pedido.getStatus().name();
         this.dataCriada = pedido.getCreatedAt();
@@ -31,6 +33,9 @@ public class PedidoResponse {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getNomeCliente() { return nomeCliente; }
     public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
