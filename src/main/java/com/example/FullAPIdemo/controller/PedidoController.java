@@ -48,9 +48,15 @@ public class PedidoController {
         return pedidoService.removerPorId(id);
     }
 
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> atualizarIngredientes(
+            @PathVariable Long id,
+            @RequestBody PedidoRequest req) {
+        return pedidoService.atualizarIngredientes(id, req);
+    }
+
     @PatchMapping("/status/{id}")
     public ResponseEntity<?> atualizarStatus(@PathVariable Long id, @RequestParam String status) {
         return pedidoService.atualizarStatus(id, status);
     }
 }
-
