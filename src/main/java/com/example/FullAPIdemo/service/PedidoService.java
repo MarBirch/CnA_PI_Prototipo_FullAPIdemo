@@ -53,8 +53,7 @@ public class PedidoService {
         List<PedidoResponse> responseList = new ArrayList<>();
         for (Pedido pedido : list) {
             System.out.println(pedido.getId());
-            PedidoResponse pedidoResponse = new PedidoResponse(pedido);
-            responseList.add(pedidoResponse);
+            responseList.add(new PedidoResponse(pedido));
         }
         ObjectMapper mapper = new ObjectMapper();
         String jsonList = mapper.writeValueAsString(responseList);
@@ -97,31 +96,28 @@ public class PedidoService {
     }
 
     /**
-     * Edita as gramas dos ingredientes de um pedido PENDENTE ou CONFIRMADO.
-     * Recebe a lista completa de ingredientes com os novos valores de gramas,
-     * recalcula o valor total e persiste.
+     * Atualiza as gramas dos ingredientes de um pedido PENDENTE ou CONFIRMADO.
+     * Ingredientes que não aparecerem no body são removidos; novos são inseridos.
      */
-    public ResponseEntity<?> editarIngredientes(
+    public ResponseEntity<?> atualizarIngredientes(
             @PathVariable Long id,
-            @RequestBody @Valid PedidoRequest req) {
+            @RequestBody PedidoRequest req) {
 
         Optional<Pedido> opt = pRepo.findById(id);
         if (opt.isEmpty()) return ResponseEntity.notFound().build();
 
         Pedido pedido = opt.get();
 
-        // Só permite edição em status que ainda aceitam mudança
         String status = pedido.getStatus().name();
         if (!status.equals("PENDENTE") && !status.equals("CONFIRMADO")) {
             return ResponseEntity.badRequest()
-                    .body("Pedido não pode ser editado no status atual: " + status);
+                    .body("Só é possível editar pedidos com status PENDENTE ou CONFIRMADO.");
         }
 
-        // Remove ingredientes antigos e substitui pelos novos
+        piRepo.deleteAll(pedido.getIngredientes());
         pedido.getIngredientes().clear();
-        pRepo.save(pedido); // flush para acionar orphanRemoval
 
-        List<PedidoIngrediente> novosIngredientes = req.getIngredientes().stream().map(i -> {
+        List<PedidoIngrediente> novos = req.getIngredientes().stream().map(i -> {
             PedidoIngrediente pi = new PedidoIngrediente();
             pi.setNome(i.getNome());
             pi.setValorPorGramas(i.getValorPorGramas());
@@ -131,9 +127,9 @@ public class PedidoService {
             return pi;
         }).collect(Collectors.toList());
 
-        pedido.setIngredientes(novosIngredientes);
+        pedido.setIngredientes(novos);
 
-        BigDecimal total = novosIngredientes.stream()
+        BigDecimal total = novos.stream()
                 .map(i -> i.getValorPorGramas().multiply(i.getGramas()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         pedido.setValor(total);

@@ -47,4 +47,11 @@ public class PedidoController {
     public ResponseEntity<Void> removerPorId(@PathVariable Long id) {
         return pedidoService.removerPorId(id);
     }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> atualizarIngredientes(
+            @PathVariable Long id,
+            @RequestBody PedidoRequest req) {
+        return pedidoService.atualizarIngredientes(id, req);
+    }
 }
