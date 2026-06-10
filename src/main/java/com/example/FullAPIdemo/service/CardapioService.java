@@ -33,6 +33,12 @@ public class CardapioService {
         return ResponseEntity.status(201).body(caRepo.save(ca));
     }
 
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        return caRepo.findById(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     public List<Cardapio> buscarPorMarmiteria(@RequestParam Long marmiteriaId) {
         return caRepo.findByMarmiteriaId(marmiteriaId);
     }

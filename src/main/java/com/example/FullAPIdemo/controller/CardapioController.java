@@ -24,6 +24,11 @@ public class CardapioController {
         return cardapioService.inserirCardapio(ca);
     }
 
+    @GetMapping("/buscarPorId/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        return cardapioService.buscarPorId(id);
+    }
+
     @GetMapping("/todos")
     public List<Cardapio> buscarPorMarmiteria(@RequestParam Long marmiteriaId) {
         return cardapioService.buscarPorMarmiteria(marmiteriaId);

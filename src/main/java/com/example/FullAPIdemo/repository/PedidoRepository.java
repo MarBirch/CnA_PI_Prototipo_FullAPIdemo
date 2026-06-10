@@ -11,4 +11,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByMarmiteriaId(Long marmiteriaId);
     List<Pedido> findByCardapioId(Long cardapioId);
     List<Pedido> findByUserIdOrderByCreatedAtAsc(Long userId);
+
 }
