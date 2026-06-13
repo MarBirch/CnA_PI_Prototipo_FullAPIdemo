@@ -1,86 +1,60 @@
 package com.example.FullAPIdemo.model.dto;
 
-import com.example.FullAPIdemo.model.StatusPedido;
-import com.example.FullAPIdemo.model.entity.Ingrediente;
 import com.example.FullAPIdemo.model.entity.Pedido;
 import com.example.FullAPIdemo.model.entity.PedidoIngrediente;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class PedidoResponse {
-    private BigInteger id;
+
+    private Long id;
+    private Long userId;
+    private String nomeCliente;
     private BigDecimal valor;
     private String status;
-    private LocalDateTime dataPedido;
     private LocalDateTime dataCriada;
-    private String nomeMarmiteria;
+    private Long cardapioId;
+    private String cardapioNome;
     private List<PedidoIngrediente> ingredientes;
 
     public PedidoResponse(Pedido pedido) {
-        this.id = BigInteger.valueOf(pedido.getId());
+        this.id = pedido.getId();
+        this.userId = pedido.getUser() != null ? pedido.getUser().getId() : null;
+        this.nomeCliente = pedido.getUser() != null ? pedido.getUser().getNome() : pedido.getNomeCliente();
         this.valor = pedido.getValor();
         this.status = pedido.getStatus().name();
-        this.dataPedido = pedido.getDataPedido();
         this.dataCriada = pedido.getCreatedAt();
-        this.nomeMarmiteria = pedido.getMarmiteria().getNome();
-        this.ingredientes = pedido.getIngredientes();}
-
-    public BigInteger getId() {
-        return id;
+        this.cardapioId = pedido.getCardapio() != null ? pedido.getCardapio().getId() : null;
+        this.cardapioNome = pedido.getCardapio() != null ? pedido.getCardapio().getNome() : null;
+        this.ingredientes = pedido.getIngredientes();
     }
 
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public BigDecimal getValor() {
-        return valor;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
+    public String getNomeCliente() { return nomeCliente; }
+    public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
 
-    public String getStatus() {
-        return status;
-    }
+    public BigDecimal getValor() { return valor; }
+    public void setValor(BigDecimal valor) { this.valor = valor; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public LocalDateTime getDataPedido() {
-        return dataPedido;
-    }
+    public LocalDateTime getDataCriada() { return dataCriada; }
+    public void setDataCriada(LocalDateTime dataCriada) { this.dataCriada = dataCriada; }
 
-    public void setDataPedido(LocalDateTime dataPedido) {
-        this.dataPedido = dataPedido;
-    }
+    public Long getCardapioId() { return cardapioId; }
+    public void setCardapioId(Long cardapioId) { this.cardapioId = cardapioId; }
 
-    public LocalDateTime getDataCriada() {
-        return dataCriada;
-    }
+    public String getCardapioNome() { return cardapioNome; }
+    public void setCardapioNome(String cardapioNome) { this.cardapioNome = cardapioNome; }
 
-    public void setDataCriada(LocalDateTime dataCriada) {
-        this.dataCriada = dataCriada;
-    }
-
-    public String getNomeMarmiteria() {
-        return nomeMarmiteria;
-    }
-
-    public void setNomeMarmiteria(String nomeMarmiteria) {
-        this.nomeMarmiteria = nomeMarmiteria;
-    }
-
-    public List<PedidoIngrediente> getIngredientes() {
-        return ingredientes;
-    }
-
-    public void setIngredientes(List<PedidoIngrediente> ingredientes) {
-        this.ingredientes = ingredientes;
-    }
+    public List<PedidoIngrediente> getIngredientes() { return ingredientes; }
+    public void setIngredientes(List<PedidoIngrediente> ingredientes) { this.ingredientes = ingredientes; }
 }

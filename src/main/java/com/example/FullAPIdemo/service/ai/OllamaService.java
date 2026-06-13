@@ -1,4 +1,4 @@
-package com.example.FullAPIdemo.service;
+package com.example.FullAPIdemo.service.ai;
 
 import com.example.FullAPIdemo.model.dto.LoginRequest;
 import com.example.FullAPIdemo.model.dto.ai.ChatRequest;
@@ -9,15 +9,14 @@ import com.example.FullAPIdemo.model.entity.User;
 import com.example.FullAPIdemo.repository.ChatRepository;
 import com.example.FullAPIdemo.repository.MessageRepository;
 import com.example.FullAPIdemo.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import reactor.core.publisher.Flux;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -35,36 +34,43 @@ public class OllamaService {
     @Autowired
     private MessageRepository mRepo;
 
-    @PostMapping("/chat/messages")
     public ResponseEntity<String> listChat(@RequestBody @Valid ChatRequest chatRequest){
         ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(chatRequest.getChatId());
-        
+
         for(Message m : list){
             //list.add(m.getContent());
             System.out.println(m.getContent());
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(list);
+        String jsonList = null;
+        try {
+            jsonList = mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(jsonList);
 
         return ResponseEntity.ok().body(jsonList);
     }
 
-    @PostMapping("/chatlist")
     public ResponseEntity<String> listUserChats(@RequestBody @Valid LoginRequest chatRequest){
         ArrayList<Chat> list = cRepo.findByUserId(uRepo.findIdByUsername(chatRequest.getUsername()));
 
         ObjectMapper mapper = new ObjectMapper();
-        String jsonList = mapper.writeValueAsString(list);
+        String jsonList = null;
+        try {
+            jsonList = mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(jsonList);
 
         return ResponseEntity.ok().body(jsonList);
     }
 
-    @PostMapping("/chat")
     public ResponseEntity<String> newChat(@RequestBody @Valid ChatRequest chatRequest, ChatClient chatClient){
         String username = chatRequest.getUsername();
         String prompt = chatRequest.getPrompt();
@@ -97,7 +103,7 @@ public class OllamaService {
                 res.setChat(chat);
                 res.setRole("ASSISTANT");
                 res.setContent(response);
-                mRepo.save(msg);
+                mRepo.save(res);
 
 
                 return ResponseEntity.ok().body(response);
@@ -128,7 +134,6 @@ public class OllamaService {
         }
     }
 
-    @PostMapping("/prompt")
     public ResponseEntity<String> ollamaPrompt(@RequestBody @Valid PromptRequest promptRequest, ChatClient chatClient){
 
         Long conversationId = promptRequest.getChatId();
@@ -152,10 +157,10 @@ public class OllamaService {
                 content();
 
         Message res = new Message();
-        msg.setCreatedAt(time);
-        msg.setRole("ASSISTANT");
-        msg.setChat(chat);
-        msg.setContent(prompt);
+        res.setCreatedAt(time);
+        res.setRole("ASSISTANT");
+        res.setChat(chat);
+        res.setContent(prompt);
         mRepo.save(res);
 
         System.out.println("finished generation\nresponse:\n\n" + response);

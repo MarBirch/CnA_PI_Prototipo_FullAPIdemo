@@ -10,9 +10,13 @@ import java.util.List;
 
 @Entity
 public class Pedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private String nomeCliente;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
@@ -32,85 +36,51 @@ public class Pedido {
         this.createdAt = LocalDateTime.now();
     }
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user;
-
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "marmiteria_id", nullable = false)
     @JsonIgnore
     private Marmiteria marmiteria;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = true)
     @JsonIgnore
+    private User user;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<PedidoIngrediente> ingredientes;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "cardapio_id", nullable = false)
+    @JsonIgnore
     private Cardapio cardapio;
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getNomeCliente() { return nomeCliente; }
+    public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
 
-    public BigDecimal getValor() {
-        return valor;
-    }
+    public BigDecimal getValor() { return valor; }
+    public void setValor(BigDecimal valor) { this.valor = valor; }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
+    public StatusPedido getStatus() { return status; }
+    public void setStatus(StatusPedido status) { this.status = status; }
 
-    public User getUser() {
-        return user;
-    }
+    public LocalDateTime getDataPedido() { return dataPedido; }
+    public void setDataPedido(LocalDateTime dataPedido) { this.dataPedido = dataPedido; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public List<PedidoIngrediente> getIngredientes() {
-        return ingredientes;
-    }
+    public Marmiteria getMarmiteria() { return marmiteria; }
+    public void setMarmiteria(Marmiteria marmiteria) { this.marmiteria = marmiteria; }
 
-    public void setIngredientes(List<PedidoIngrediente> ingredientes) {
-        this.ingredientes = ingredientes;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public StatusPedido getStatus() {
-        return status;
-    }
+    public List<PedidoIngrediente> getIngredientes() { return ingredientes; }
+    public void setIngredientes(List<PedidoIngrediente> ingredientes) { this.ingredientes = ingredientes; }
 
-    public void setStatus(StatusPedido status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getDataPedido() {
-        return dataPedido;
-    }
-
-    public void setDataPedido(LocalDateTime dataPedido) {
-        this.dataPedido = dataPedido;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Marmiteria getMarmiteria() {
-        return marmiteria;
-    }
-
-    public void setMarmiteria(Marmiteria marmiteria) {
-        this.marmiteria = marmiteria;
-    }
+    public Cardapio getCardapio() { return cardapio; }
+    public void setCardapio(Cardapio cardapio) { this.cardapio = cardapio; }
 }
