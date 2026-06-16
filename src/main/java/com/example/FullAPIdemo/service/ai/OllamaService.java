@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -36,7 +36,6 @@ public class OllamaService {
 
     public ResponseEntity<String> listChat(@RequestBody @Valid ChatRequest chatRequest){
         ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(chatRequest.getChatId());
-
         for(Message m : list){
             //list.add(m.getContent());
             System.out.println(m.getContent());
@@ -46,7 +45,7 @@ public class OllamaService {
         String jsonList = null;
         try {
             jsonList = mapper.writeValueAsString(list);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -62,7 +61,7 @@ public class OllamaService {
         String jsonList = null;
         try {
             jsonList = mapper.writeValueAsString(list);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -124,8 +123,16 @@ public class OllamaService {
 
                 System.out.println("finished generation\nresponse:\n\n" + response);
 
+                System.out.println("finished generation\nresponse:\n\n" + response);
 
-                return ResponseEntity.ok().body(response);
+                Message res = new Message();
+                res.setCreatedAt(time);
+                res.setChat(chat);
+                res.setRole("ASSISTANT");
+                res.setContent(response);
+                mRepo.save(res);
+
+                return ResponseEntity.ok().body("\"response\":\"" + response+"\",role\":\"ASSISTANT\"");
             }
 
         } catch (NoSuchElementException e) {
@@ -134,7 +141,8 @@ public class OllamaService {
         }
     }
 
-    public ResponseEntity<String> ollamaPrompt(@RequestBody @Valid PromptRequest promptRequest, ChatClient chatClient){
+    public ResponseEntity<String>
+    ollamaPrompt(@RequestBody @Valid PromptRequest promptRequest, ChatClient chatClient){
 
         Long conversationId = promptRequest.getChatId();
         String prompt = promptRequest.getPrompt();
@@ -156,11 +164,12 @@ public class OllamaService {
                 call().
                 content();
 
+        System.out.println("done generating...");
         Message res = new Message();
         res.setCreatedAt(time);
         res.setRole("ASSISTANT");
         res.setChat(chat);
-        res.setContent(prompt);
+        res.setContent(response);
         mRepo.save(res);
 
         System.out.println("finished generation\nresponse:\n\n" + response);

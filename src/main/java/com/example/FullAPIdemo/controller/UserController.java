@@ -25,6 +25,13 @@ public class UserController {
     public ResponseEntity<Boolean> login(@RequestBody @Valid LoginRequest request) {
         return userService.login(request);
     }
+
+    @GetMapping("/id")
+    public ResponseEntity<Long> getUserId(@RequestParam String username) {
+        Long id = userService.getUserIdByUsername(username);
+        if (id == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(id);
+    }
 }
 //    //- buscar users por parte inicial do nome - FEITO
 //    @GetMapping("/buscar/nome/{nome}")
