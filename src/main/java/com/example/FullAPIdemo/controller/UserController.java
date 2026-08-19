@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/apiUser")
@@ -24,6 +24,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestBody @Valid LoginRequest request) {
         return userService.login(request);
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<Long> getUserId(@RequestParam String username) {
+        Long id = userService.getUserIdByUsername(username);
+        if (id == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(id);
     }
 }
 //    //- buscar users por parte inicial do nome - FEITO

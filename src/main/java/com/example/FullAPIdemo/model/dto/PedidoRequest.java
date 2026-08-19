@@ -6,6 +6,7 @@ import java.util.List;
 public class PedidoRequest {
 
     private Long userId;
+    private String username;
     private Long cardapioId;
     private List<IngredienteItem> ingredientes;
 
@@ -14,6 +15,9 @@ public class PedidoRequest {
 
     public Long getCardapioId() { return cardapioId; }
     public void setCardapioId(Long cardapioId) { this.cardapioId = cardapioId; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public List<IngredienteItem> getIngredientes() { return ingredientes; }
     public void setIngredientes(List<IngredienteItem> ingredientes) { this.ingredientes = ingredientes; }

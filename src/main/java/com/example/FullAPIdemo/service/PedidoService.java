@@ -67,7 +67,9 @@ public class PedidoService {
         Marmiteria marmiteria = cardapio.getMarmiteria();
 
         Pedido pedido = new Pedido();
-        User user = uRepo.findById(req.getUserId())
+
+        Long userId = uRepo.findIdByUsername(req.getUsername());
+        User user = uRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User não encontrado: " + req.getUserId()));
         pedido.setUser(user);
         pedido.setNomeCliente(null);
@@ -109,12 +111,13 @@ public class PedidoService {
         Pedido pedido = opt.get();
 
         String status = pedido.getStatus().name();
-        if (!status.equals("PENDENTE") && !status.equals("CONFIRMADO")) {
+        if (!status.equals("PENDENTE")) {
             return ResponseEntity.badRequest()
-                    .body("Só é possível editar pedidos com status PENDENTE ou CONFIRMADO.");
+                    .body("Só é possível editar pedidos com status PENDENTE.");
         }
 
-        piRepo.deleteAll(pedido.getIngredientes());
+//        System.out.printf();
+        piRepo.deleteByPedidoId(id);
         pedido.getIngredientes().clear();
 
         List<PedidoIngrediente> novos = req.getIngredientes().stream().map(i -> {
@@ -128,6 +131,7 @@ public class PedidoService {
         }).collect(Collectors.toList());
 
         pedido.setIngredientes(novos);
+
 
         BigDecimal total = novos.stream()
                 .map(i -> i.getValorPorGramas().multiply(i.getGramas()))
