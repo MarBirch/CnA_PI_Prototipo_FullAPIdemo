@@ -58,4 +58,30 @@ public class MarmiteriaService {
         return maRepo.findAll();
     }
 
+    public ResponseEntity<?> buscarPorId(Long id) {
+        return maRepo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<?> atualizar(Marmiteria ma) {
+        if (!maRepo.existsById(ma.getId())) return ResponseEntity.notFound().build();
+        Marmiteria existente = maRepo.findById(ma.getId()).get();
+        existente.setNome(ma.getNome());
+        existente.setEmail(ma.getEmail());
+        existente.setTelefone(ma.getTelefone());
+        existente.setCnpj(ma.getCnpj());
+        existente.setCep(ma.getCep());
+        existente.setNumero(ma.getNumero());
+
+        if (ma.getSenha() != null && !ma.getSenha().isBlank()) {
+            if (ma.getSenhaAtual() == null || !ma.getSenhaAtual().equals(existente.getSenha())) {
+                return ResponseEntity.status(401).body("Senha atual incorreta.");
+            }
+            existente.setSenha(ma.getSenha());
+        }
+
+        return ResponseEntity.ok(maRepo.save(existente));
+    }
+
 }

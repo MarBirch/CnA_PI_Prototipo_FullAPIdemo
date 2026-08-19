@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,6 @@ public class MarmiteriaController {
         marmiteriaService.inserirMarmiteria(ma);
     }
 
-    /** Retorna todas as marmiterias via DTO seguro (sem risco de loop de serialização). */
     @GetMapping("/todos")
     public List<MarmiteriaResponse> buscarTodosMarmiterias() {
         return marmiteriaService.buscarTodosMarmiterias()
@@ -39,7 +37,6 @@ public class MarmiteriaController {
                 .collect(Collectors.toList());
     }
 
-    /** Retorna apenas as marmiterias abertas (status = true). */
     @GetMapping("/abertos")
     public List<MarmiteriaResponse> buscarMarmiteriasAbertas() {
         return marmiteriaService.buscarMarmiteriasAbertas()
@@ -48,13 +45,18 @@ public class MarmiteriaController {
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("/remover/{id}")
-    public void removerPorCodigo(@PathVariable Long id) {
-        marmiteriaService.removerPorCodigo(id);
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        return marmiteriaService.buscarPorId(id);
     }
 
     @PutMapping("/atualizar")
-    public void atualizarMarmiteria(@RequestBody Marmiteria ma) {
-        marmiteriaService.atualizarMarmiteria(ma);
+    public ResponseEntity<?> atualizar(@RequestBody Marmiteria ma) {
+        return marmiteriaService.atualizar(ma);
+    }
+
+    @DeleteMapping("/remover/{id}")
+    public void removerPorCodigo(@PathVariable Long id) {
+        marmiteriaService.removerPorCodigo(id);
     }
 }

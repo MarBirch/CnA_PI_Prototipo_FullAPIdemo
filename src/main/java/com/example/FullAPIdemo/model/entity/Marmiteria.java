@@ -54,6 +54,12 @@ public class Marmiteria {
     @PrePersist
     protected void onCreate() { this.createdAt = LocalDateTime.now(); }
 
+    @Transient
+    private String senhaAtual;
+
+    public String getSenhaAtual() { return senhaAtual; }
+    public void setSenhaAtual(String senhaAtual) { this.senhaAtual = senhaAtual; }
+
 
     public Long getId() {
         return id;
