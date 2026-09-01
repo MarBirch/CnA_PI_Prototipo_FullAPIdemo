@@ -1,6 +1,6 @@
 package com.example.FullAPIdemo.model.dto;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 public class CadastroRequest {
 

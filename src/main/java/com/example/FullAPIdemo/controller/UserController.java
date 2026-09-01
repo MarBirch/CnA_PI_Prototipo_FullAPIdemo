@@ -1,7 +1,10 @@
 package com.example.FullAPIdemo.controller;
 
+import com.example.FullAPIdemo.model.dto.AlterarSenhaRequest;
+import com.example.FullAPIdemo.model.dto.AtualizarPerfilRequest;
 import com.example.FullAPIdemo.model.dto.CadastroRequest;
 import com.example.FullAPIdemo.model.dto.LoginRequest;
+import com.example.FullAPIdemo.model.dto.PerfilResponse;
 import com.example.FullAPIdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,21 @@ public class UserController {
         Long id = userService.getUserIdByUsername(username);
         if (id == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(id);
+    }
+
+    @GetMapping("/perfil")
+    public ResponseEntity<PerfilResponse> getPerfil(@RequestParam String username) {
+        return userService.buscarPerfil(username);
+    }
+
+    @PutMapping("/alterar-senha")
+    public ResponseEntity<Boolean> alterarSenha(@RequestBody @Valid AlterarSenhaRequest request) {
+        return userService.alterarSenha(request);
+    }
+
+    @PutMapping("/atualizar")
+    public ResponseEntity<Boolean> atualizarPerfil(@RequestBody @Valid AtualizarPerfilRequest request) {
+        return userService.atualizarPerfil(request);
     }
 }
 //    //- buscar users por parte inicial do nome - FEITO

@@ -16,8 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/apiOllama")
@@ -135,6 +135,11 @@ public class OllamaController {
     public ResponseEntity<String> ollamaPrompt(@RequestBody @Valid PromptRequest promptRequest){
         return ollamaService.ollamaPrompt(promptRequest, this.chatClient);
      }
+
+    @PostMapping("/chat/title")
+    public ResponseEntity<String> generateTitleForChat(@RequestBody @Valid ChatRequest chatRequest) {
+        return ollamaService.generateTitleForChat(chatRequest, this.chatClient);
+    }
 
     record Input(@NotNull String prompt){}
     record Output(String content) {}

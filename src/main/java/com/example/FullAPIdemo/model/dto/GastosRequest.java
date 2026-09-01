@@ -1,6 +1,6 @@
 package com.example.FullAPIdemo.model.dto;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class GastosRequest {
