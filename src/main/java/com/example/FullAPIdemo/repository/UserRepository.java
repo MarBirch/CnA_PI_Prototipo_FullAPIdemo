@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     //@Query("SELECT u.senha FROM User u WHERE u.username = :username")
-    @Query("SELECT u.Id FROM User u WHERE u.username = :username")
+    @Query("SELECT u.id FROM User u WHERE u.username = :username")
     Long findIdByUsername(@Param("username") String username);
 
     void save(CadastroRequest request);

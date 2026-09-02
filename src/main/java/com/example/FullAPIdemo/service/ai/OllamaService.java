@@ -20,6 +20,8 @@ import tools.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -36,7 +38,6 @@ public class OllamaService {
     public ResponseEntity<String> listChat(@RequestBody @Valid ChatRequest chatRequest){
         ArrayList<Message> list = mRepo.findByChatIdOrderByCreatedAtAsc(chatRequest.getChatId());
         for(Message m : list){
-            //list.add(m.getContent());
             System.out.println(m.getContent());
         }
 
@@ -54,7 +55,11 @@ public class OllamaService {
     }
 
     public ResponseEntity<String> listUserChats(@RequestBody @Valid LoginRequest chatRequest){
-        ArrayList<Chat> list = cRepo.findByUserId(uRepo.findIdByUsername(chatRequest.getUsername()));
+        Long userId = uRepo.findIdByUsername(chatRequest.getUsername());
+        if (userId == null) {
+            return ResponseEntity.ok().body("[]");
+        }
+        ArrayList<Chat> list = cRepo.findByUserId(userId);
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonList = null;
@@ -75,76 +80,71 @@ public class OllamaService {
         Long chatId = chatRequest.getChatId();
         LocalDateTime time = LocalDateTime.now();
 
-        User u = this.uRepo.findByUsername(chatRequest.getUsername());
+        User u = this.uRepo.findByUsername(username);
+        if (u == null) {
+            return ResponseEntity.badRequest().body("{\"error\":\"Usuário não encontrado: " + username + "\"}");
+        }
+
         try {
-            if(chatId == null) {
-                Chat chat = new Chat();
+            Chat chat;
+            if (chatId == null) {
+                chat = new Chat();
                 chat.setUser(u);
 
                 String generatedTitle = generateChatTitle(prompt, chatClient);
                 chat.setTitle(generatedTitle);
-                cRepo.save(chat);
-
-                Message msg = new Message();
-                msg.setCreatedAt(time);
-                msg.setRole("USER");
-                msg.setChat(chat);
-                msg.setContent(prompt);
-                mRepo.save(msg);
-
-                var response = chatClient.prompt().
-                        user(msg.getContent()).
-                        advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chat.getId())).
-                        call().
-                        content();
-
-                System.out.println("finished generation\nresponse:\n\n" + response);
-
-                Message res = new Message();
-                res.setCreatedAt(time);
-                res.setChat(chat);
-                res.setRole("ASSISTANT");
-                res.setContent(response);
-                mRepo.save(res);
-
-
-                return ResponseEntity.ok().body(response);
+                chat = cRepo.save(chat);
             } else {
-                Chat chat = cRepo.getReferenceById(chatId);
-                if (chat.getTitle() == null || chat.getTitle().isBlank()) {
+                chat = cRepo.findById(chatId).orElse(null);
+                if (chat == null) {
+                    chat = new Chat();
+                    chat.setUser(u);
                     String generatedTitle = generateChatTitle(prompt, chatClient);
                     chat.setTitle(generatedTitle);
-                    cRepo.save(chat);
+                    chat = cRepo.save(chat);
+                } else if (chat.getTitle() == null || chat.getTitle().isBlank()) {
+                    String generatedTitle = generateChatTitle(prompt, chatClient);
+                    chat.setTitle(generatedTitle);
+                    chat = cRepo.save(chat);
                 }
-
-                Message msg = new Message();
-                msg.setCreatedAt(time);
-                msg.setRole("USER");
-                msg.setChat(chat);
-                msg.setContent(prompt);
-                mRepo.save(msg);
-
-                var response = chatClient.prompt().
-                        user(msg.getContent()).
-                        advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chat.getId())).
-                        call().
-                        content();
-
-                System.out.println("finished generation\nresponse:\n\n" + response);
-
-                Message res = new Message();
-                res.setCreatedAt(time);
-                res.setChat(chat);
-                res.setRole("ASSISTANT");
-                res.setContent(response);
-                mRepo.save(res);
-
-                return ResponseEntity.ok().body("\"response\":\"" + response+"\",role\":\"ASSISTANT\"");
             }
 
-        } catch (NoSuchElementException e) {
-            System.out.printf("Username doesn't exist");
-            return ResponseEntity.ok().body("username errorrr");
+            final Chat targetChat = chat;
+
+            Message msg = new Message();
+            msg.setCreatedAt(time);
+            msg.setRole("USER");
+            msg.setChat(targetChat);
+            msg.setContent(prompt);
+            mRepo.save(msg);
+
+            var response = chatClient.prompt().
+                    user(msg.getContent()).
+                    advisors(a -> a.param(ChatMemory.CONVERSATION_ID, targetChat.getId())).
+                    call().
+                    content();
+
+            System.out.println("finished generation\nresponse:\n\n" + response);
+
+            Message res = new Message();
+            res.setCreatedAt(time);
+            res.setChat(targetChat);
+            res.setRole("ASSISTANT");
+            res.setContent(response);
+            mRepo.save(res);
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> bodyMap = new HashMap<>();
+            bodyMap.put("content", response);
+            bodyMap.put("response", response);
+            bodyMap.put("role", "ASSISTANT");
+            bodyMap.put("chatId", targetChat.getId());
+
+            return ResponseEntity.ok().body(mapper.writeValueAsString(bodyMap));
+
+        } catch (Exception e) {
+            System.err.println("Erro ao criar chat: " + e.getMessage());
+            return ResponseEntity.status(500).body("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
@@ -172,7 +172,7 @@ public class OllamaService {
     public ResponseEntity<String> generateTitleForChat(@RequestBody @Valid ChatRequest chatRequest, ChatClient chatClient) {
         Long chatId = chatRequest.getChatId();
         if (chatId == null) {
-            return ResponseEntity.badRequest().body("chatId é obrigatório");
+            return ResponseEntity.badRequest().body("{\"error\":\"chatId é obrigatório\"}");
         }
         try {
             Chat chat = cRepo.findById(chatId).orElseThrow();
@@ -190,7 +190,7 @@ public class OllamaService {
             cRepo.save(chat);
             return ResponseEntity.ok().body("{\"chatId\":" + chatId + ",\"title\":\"" + title + "\"}");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao gerar título: " + e.getMessage());
+            return ResponseEntity.status(500).body("{\"error\":\"Erro ao gerar título: " + e.getMessage() + "\"}");
         }
     }
 
@@ -201,7 +201,15 @@ public class OllamaService {
         String prompt = promptRequest.getPrompt();
         LocalDateTime time = LocalDateTime.now();
 
-        Chat chat = cRepo.getReferenceById(conversationId);
+        if (conversationId == null) {
+            return ResponseEntity.badRequest().body("{\"error\":\"chatId é obrigatório\"}");
+        }
+
+        Chat chat = cRepo.findById(conversationId).orElse(null);
+        if (chat == null) {
+            return ResponseEntity.badRequest().body("{\"error\":\"Chat não encontrado para ID " + conversationId + "\"}");
+        }
+
         Message msg = new Message();
         msg.setCreatedAt(time);
         msg.setRole("USER");
@@ -227,7 +235,17 @@ public class OllamaService {
 
         System.out.println("finished generation\nresponse:\n\n" + response);
 
-        return ResponseEntity.ok().body(response);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> bodyMap = new HashMap<>();
+            bodyMap.put("content", response);
+            bodyMap.put("response", response);
+            bodyMap.put("role", "ASSISTANT");
+            bodyMap.put("chatId", conversationId);
+            return ResponseEntity.ok().body(mapper.writeValueAsString(bodyMap));
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"content\":\"" + (response != null ? response.replace("\"", "\\\"") : "") + "\"}");
+        }
     }
 
 }
