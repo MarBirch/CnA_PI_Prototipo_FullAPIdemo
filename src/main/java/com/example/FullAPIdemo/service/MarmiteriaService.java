@@ -73,6 +73,10 @@ public class MarmiteriaService {
         existente.setCnpj(ma.getCnpj());
         existente.setCep(ma.getCep());
         existente.setNumero(ma.getNumero());
+        existente.setRua(ma.getRua());
+        existente.setBairro(ma.getBairro());
+        existente.setCidade(ma.getCidade());
+        existente.setUf(ma.getUf());
 
         if (ma.getSenha() != null && !ma.getSenha().isBlank()) {
             if (ma.getSenhaAtual() == null || !ma.getSenhaAtual().equals(existente.getSenha())) {
