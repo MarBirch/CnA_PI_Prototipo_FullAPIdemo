@@ -1,7 +1,10 @@
 package com.example.FullAPIdemo.service;
 
+import com.example.FullAPIdemo.model.dto.AlterarSenhaRequest;
+import com.example.FullAPIdemo.model.dto.AtualizarPerfilRequest;
 import com.example.FullAPIdemo.model.dto.CadastroRequest;
 import com.example.FullAPIdemo.model.dto.LoginRequest;
+import com.example.FullAPIdemo.model.dto.PerfilResponse;
 import com.example.FullAPIdemo.model.entity.User;
 import com.example.FullAPIdemo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Service
@@ -81,5 +84,49 @@ public class UserService {
 
     public Long getUserIdByUsername(String username) {
         return uRepo.findIdByUsername(username);
+    }
+
+    public ResponseEntity<Boolean> alterarSenha(AlterarSenhaRequest request) {
+        if (request.getUsername() != null && request.getNovaSenha() != null) {
+            User u = uRepo.findByUsername(request.getUsername());
+            if (u != null) {
+                u.setSenha(request.getNovaSenha());
+                uRepo.save(u);
+                return ResponseEntity.ok(true);
+            }
+        }
+        return ResponseEntity.ok(false);
+    }
+
+    public ResponseEntity<PerfilResponse> buscarPerfil(String username) {
+        if (username != null && !username.trim().isEmpty()) {
+            User u = uRepo.findByUsername(username.trim());
+            if (u != null) {
+                return ResponseEntity.ok(new PerfilResponse(u));
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    public ResponseEntity<Boolean> atualizarPerfil(AtualizarPerfilRequest request) {
+        if (request == null || request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(false);
+        }
+
+        User u = uRepo.findByUsername(request.getUsername().trim());
+        if (u == null) {
+            return ResponseEntity.ok(false);
+        }
+
+        if (request.getNome() != null) u.setNome(request.getNome());
+        if (request.getEmail() != null) u.setEmail(request.getEmail());
+        if (request.getCelular() != null) u.setCelular(request.getCelular());
+        if (request.getEndereco() != null) u.setEndereco(request.getEndereco());
+        if (request.getCep() != null) u.setCep(request.getCep());
+        if (request.getPeso() != null) u.setPeso(request.getPeso());
+        if (request.getAltura() != null) u.setAltura(request.getAltura());
+
+        uRepo.save(u);
+        return ResponseEntity.ok(true);
     }
 }
