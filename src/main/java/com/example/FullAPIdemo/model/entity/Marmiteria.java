@@ -1,6 +1,8 @@
 package com.example.FullAPIdemo.model.entity;
 
+import com.example.FullAPIdemo.model.StatusAcesso;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -25,7 +27,19 @@ public class Marmiteria {
     private String nome;
 
     @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
+
+    /** Nulo em registros legados (tratados como ATIVO). */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_acesso", length = 30)
+    @JsonIgnore
+    private StatusAcesso statusAcesso;
+
+    public StatusAcesso getStatusAcesso() { return statusAcesso; }
+    public void setStatusAcesso(StatusAcesso statusAcesso) { this.statusAcesso = statusAcesso; }
+    @JsonIgnore
+    public boolean isAcessoAtivo() { return statusAcesso == null || statusAcesso == StatusAcesso.ATIVO; }
 
     @Column
     private String cep;
@@ -99,6 +113,7 @@ public class Marmiteria {
     protected void onCreate() { this.createdAt = LocalDateTime.now(); }
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senhaAtual;
 
     public String getSenhaAtual() { return senhaAtual; }

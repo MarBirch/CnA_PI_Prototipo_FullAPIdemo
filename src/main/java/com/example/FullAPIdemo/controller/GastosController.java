@@ -19,7 +19,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/apiGastos")
-@CrossOrigin(origins = "*")
 public class GastosController {
 
     @Autowired

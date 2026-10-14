@@ -20,13 +20,15 @@ public class UserService {
     @Autowired
     UserRepository uRepo;
 
+    @Autowired
+    com.example.FullAPIdemo.security.PasswordService passwords;
+
     public ResponseEntity<Boolean> login(@RequestBody LoginRequest loginRequest) {
-        System.out.println(loginRequest.getUsername());
-        System.out.println(loginRequest.getSenha());
 
         if (usernameExists(loginRequest.getUsername())){
             User u = this.uRepo.findByUsername(loginRequest.getUsername());
-            if (u.getSenha().equals(loginRequest.getSenha())){
+            if (passwords.matches(loginRequest.getSenha(), u.getSenha())){
+                if (passwords.precisaMigrar(u.getSenha())) { u.setSenha(passwords.hash(loginRequest.getSenha())); uRepo.save(u); }
                 System.out.println("sucesso");
                 //retorna verdadeiro
                 return ResponseEntity.ok().body(true);
@@ -52,11 +54,10 @@ public class UserService {
 
         System.out.println("cadastrando...");
 
-        User u = new User(request.getUsername(), request.getSenha());
+        User u = new User(request.getUsername(), passwords.hash(request.getSenha()));
 
         // Campos opcionais — só atribui se o Flutter enviou algo
         if (request.getNome()     != null) u.setNome(request.getNome());
-        if (request.getSenha()     != null) u.setSenha(request.getSenha());
         if (request.getEmail()    != null) u.setEmail(request.getEmail());
         if (request.getCelular()  != null) u.setCelular(request.getCelular());
         if (request.getEndereco() != null) u.setEndereco(request.getEndereco());
@@ -90,7 +91,7 @@ public class UserService {
         if (request.getUsername() != null && request.getNovaSenha() != null) {
             User u = uRepo.findByUsername(request.getUsername());
             if (u != null) {
-                u.setSenha(request.getNovaSenha());
+                u.setSenha(passwords.hash(request.getNovaSenha()));
                 uRepo.save(u);
                 return ResponseEntity.ok(true);
             }

@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/apiCardapio")
-@CrossOrigin(origins = "*")
 public class CardapioController {
 
     @Autowired

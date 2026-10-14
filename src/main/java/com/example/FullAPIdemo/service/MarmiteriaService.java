@@ -18,12 +18,31 @@ public class MarmiteriaService {
     @Autowired
     MarmiteriaRepository maRepo;
 
+    @Autowired
+    com.example.FullAPIdemo.security.PasswordService passwords;
+
+    /** Valida credenciais (BCrypt, com migracao de senhas legadas). */
+    public Optional<Marmiteria> autenticar(String email, String senha) {
+        if (email == null || senha == null) return Optional.empty();
+        Optional<Marmiteria> opt = maRepo.findFirstByEmailIgnoreCase(email.trim());
+        if (opt.isEmpty() || !passwords.matches(senha, opt.get().getSenha())) return Optional.empty();
+        Marmiteria m = opt.get();
+        if (passwords.precisaMigrar(m.getSenha())) {
+            m.setSenha(passwords.hash(senha));
+            maRepo.save(m);
+        }
+        return Optional.of(m);
+    }
+
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        Optional<Marmiteria> opt = maRepo.findByEmailAndSenha(req.getUsername(), req.getSenha());
+        Optional<Marmiteria> opt = autenticar(req.getUsername(), req.getSenha());
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body("Usuário ou senha inválidos.");
         }
         Marmiteria m = opt.get();
+        if (!m.isAcessoAtivo()) {
+            return ResponseEntity.status(403).body("Acesso da empresa não está ativo.");
+        }
         Map<String, Object> resp = new HashMap<>();
         resp.put("id", m.getId());
         resp.put("nome", m.getNome());
@@ -31,6 +50,8 @@ public class MarmiteriaService {
     }
 
     public void inserirMarmiteria(@RequestBody Marmiteria ma) {
+        ma.setId(null);
+        if (ma.getSenha() != null && !ma.getSenha().isBlank()) ma.setSenha(passwords.hash(ma.getSenha()));
         maRepo.save(ma);
     }
 
@@ -79,10 +100,10 @@ public class MarmiteriaService {
         existente.setUf(ma.getUf());
 
         if (ma.getSenha() != null && !ma.getSenha().isBlank()) {
-            if (ma.getSenhaAtual() == null || !ma.getSenhaAtual().equals(existente.getSenha())) {
+            if (!passwords.matches(ma.getSenhaAtual(), existente.getSenha())) {
                 return ResponseEntity.status(401).body("Senha atual incorreta.");
             }
-            existente.setSenha(ma.getSenha());
+            existente.setSenha(passwords.hash(ma.getSenha()));
         }
 
         return ResponseEntity.ok(maRepo.save(existente));

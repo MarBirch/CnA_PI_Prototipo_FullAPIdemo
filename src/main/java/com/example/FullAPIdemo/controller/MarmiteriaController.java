@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/apiMarmiteria")
-@CrossOrigin(origins = "*")
 public class MarmiteriaController {
 
     @Autowired

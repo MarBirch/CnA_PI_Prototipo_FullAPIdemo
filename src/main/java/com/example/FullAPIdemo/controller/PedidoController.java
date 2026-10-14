@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/apiPedido")
-@CrossOrigin(origins = "*")
 public class PedidoController {
     @Autowired
     PedidoService pedidoService;

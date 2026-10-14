@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface MarmiteriaRepository extends JpaRepository<Marmiteria, Long> {
-    Optional<Marmiteria> findByEmailAndSenha(String email, String senha);
+    Optional<Marmiteria> findFirstByEmailIgnoreCase(String email);
 }

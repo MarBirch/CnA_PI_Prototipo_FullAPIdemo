@@ -1,27 +1,22 @@
 package com.example.FullAPIdemo.controller;
 
-import com.example.FullAPIdemo.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.FullAPIdemo.model.dto.web.LeadRequest;
+import com.example.FullAPIdemo.service.LeadService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/** Formulario comercial: salva o lead no banco e notifica por e-mail. /enviar-email mantido por compatibilidade. */
 @RestController
 @RequestMapping("/api/cadastro-marmiteria")
 public class MarmiteriaRegistrationController {
+    private final LeadService leadService;
 
-    @Autowired
-    private EmailService emailService;
+    public MarmiteriaRegistrationController(LeadService leadService) { this.leadService = leadService; }
 
-    @PostMapping("/enviar-email")
-    public void enviarEmailCadastro(@RequestBody Map<String, String> data) {
-        String body = "Novo cadastro de restaurante:\n\n" +
-                "Nome da Loja: " + data.get("nomeLoja") + "\n" +
-                "CNPJ: " + data.get("cnpj") + "\n" +
-                "Email: " + data.get("email") + "\n" +
-                "Telefone: " + data.get("telefone") + "\n" +
-                "Tipo de Estabelecimento: " + data.get("tipoEstabelecimento");
-
-        emailService.sendEmail("cl203257@g.unicamp.br", "Novo Cadastro de Restaurante", body);
-    }
+    @PostMapping({"", "/enviar-email"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, Object> cadastrar(@RequestBody @Valid LeadRequest request) { return leadService.registrar(request); }
 }
