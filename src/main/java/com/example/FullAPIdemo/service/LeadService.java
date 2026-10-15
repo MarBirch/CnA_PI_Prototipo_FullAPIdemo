@@ -57,10 +57,10 @@ public class LeadService {
         l.setNomeLoja(r.nomeLoja().trim());
         l.setCnpj(blankToNull(r.cnpj()));
         l.setEmail(email);
-        l.setTelefone(r.telefone().trim());
+        l.setTelefone(formatTelefone(r.telefone()));
         l.setResponsavel(r.responsavel().trim());
-        l.setCidade(blankToNull(r.cidade()));
-        l.setUf(r.uf() == null || r.uf().isBlank() ? null : r.uf().trim().toUpperCase());
+        l.setCep(r.cep() == null || r.cep().isBlank() ? null : r.cep().replaceAll("\\D", ""));
+        l.setNumero(blankToNull(r.numero()));
         l.setMensagem(blankToNull(r.mensagem()));
         leads.save(l);
         historicos.save(new LeadHistorico(l, novo ? "CADASTRO_RECEBIDO" : "CADASTRO_ATUALIZADO", "Formulario comercial enviado pelo site.", null));
@@ -76,7 +76,8 @@ public class LeadService {
                     "CNPJ: " + Objects.toString(l.getCnpj(), "-") + "\n" +
                     "Email: " + l.getEmail() + "\n" +
                     "Telefone: " + l.getTelefone() + "\n" +
-                    "Tipo de Estabelecimento: " + l.getTipoEstabelecimento();
+                    "CEP: " + Objects.toString(l.getCep(), "-") + "\n" +
+                    "Numero do restaurante: " + Objects.toString(l.getNumero(), "-");
             emailService.sendEmail(emailDestino, "Novo Cadastro de Restaurante", body);
         } catch (Exception e) {
             // O cadastro ja esta salvo; uma falha de e-mail nao deve perder o lead.
@@ -190,6 +191,8 @@ public class LeadService {
         m.setEmail(l.getEmail());
         m.setTelefone(l.getTelefone());
         m.setCnpj(l.getCnpj());
+        m.setCep(l.getCep());
+        m.setNumero(l.getNumero());
         m.setCidade(l.getCidade());
         m.setUf(l.getUf());
         m.setStatus(false);
@@ -215,6 +218,12 @@ public class LeadService {
 
     private LeadComercial buscar(Long id) {
         return leads.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa nao encontrada."));
+    }
+
+    private static String formatTelefone(String value) {
+        String digits = value.replaceAll("\\D", "");
+        int split = digits.length() == 11 ? 7 : 6;
+        return "(" + digits.substring(0, 2) + ") " + digits.substring(2, split) + "-" + digits.substring(split);
     }
 
     private static String blankToNull(String s) { return s == null || s.isBlank() ? null : s.trim(); }

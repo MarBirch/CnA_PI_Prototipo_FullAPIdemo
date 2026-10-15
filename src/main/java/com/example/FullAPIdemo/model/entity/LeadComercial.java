@@ -16,8 +16,9 @@ public class LeadComercial {
     @Column(length = 18) private String cnpj;
     @Column(nullable = false, length = 150) private String email;
     @Column(length = 20) private String telefone;
-    @Column(name = "tipo_estabelecimento", length = 60) private String tipoEstabelecimento;
     @Column(length = 120) private String responsavel;
+    @Column private String cep;
+    @Column private String numero;
     @Column(length = 100) private String cidade;
     @Column(length = 2) private String uf;
     @Column(length = 1000) private String mensagem;
@@ -45,10 +46,12 @@ public class LeadComercial {
     public void setEmail(String v) { email = v; }
     public String getTelefone() { return telefone; }
     public void setTelefone(String v) { telefone = v; }
-    public String getTipoEstabelecimento() { return tipoEstabelecimento; }
-    public void setTipoEstabelecimento(String v) { tipoEstabelecimento = v; }
     public String getResponsavel() { return responsavel; }
     public void setResponsavel(String v) { responsavel = v; }
+    public String getCep() { return cep; }
+    public void setCep(String v) { cep = v; }
+    public String getNumero() { return numero; }
+    public void setNumero(String v) { numero = v; }
     public String getCidade() { return cidade; }
     public void setCidade(String v) { cidade = v; }
     public String getUf() { return uf; }
