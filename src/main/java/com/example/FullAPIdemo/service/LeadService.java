@@ -58,7 +58,6 @@ public class LeadService {
         l.setCnpj(blankToNull(r.cnpj()));
         l.setEmail(email);
         l.setTelefone(r.telefone().trim());
-        l.setTipoEstabelecimento(r.tipoEstabelecimento().trim());
         l.setResponsavel(r.responsavel().trim());
         l.setCidade(blankToNull(r.cidade()));
         l.setUf(r.uf() == null || r.uf().isBlank() ? null : r.uf().trim().toUpperCase());
