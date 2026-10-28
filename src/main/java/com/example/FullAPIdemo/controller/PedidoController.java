@@ -54,6 +54,8 @@ public class PedidoController {
         return pedidoService.atualizarIngredientes(id, req);
     }
 
+
+
     @PatchMapping("/status/{id}")
     public ResponseEntity<?> atualizarStatus(@PathVariable Long id, @RequestParam String status) {
         return pedidoService.atualizarStatus(id, status);
