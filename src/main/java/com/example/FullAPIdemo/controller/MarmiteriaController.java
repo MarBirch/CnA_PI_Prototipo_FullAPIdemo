@@ -54,6 +54,11 @@ public class MarmiteriaController {
         return marmiteriaService.atualizar(ma);
     }
 
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<?> alterarStatus(@PathVariable Long id, @RequestParam Boolean aberto) {
+        return marmiteriaService.alterarStatus(id, aberto);
+    }
+
     @DeleteMapping("/remover/{id}")
     public void removerPorCodigo(@PathVariable Long id) {
         marmiteriaService.removerPorCodigo(id);

@@ -109,4 +109,13 @@ public class MarmiteriaService {
         return ResponseEntity.ok(maRepo.save(existente));
     }
 
+    public ResponseEntity<?> alterarStatus(Long id, Boolean aberto) {
+        Optional<Marmiteria> opt = maRepo.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        Marmiteria m = opt.get();
+        m.setStatus(aberto);
+        maRepo.save(m);
+        return ResponseEntity.ok().build();
+    }
+
 }
