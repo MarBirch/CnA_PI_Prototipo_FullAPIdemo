@@ -1,12 +1,7 @@
 package com.example.FullAPIdemo.service;
-
-import com.example.FullAPIdemo.model.StatusComercial;
-import com.example.FullAPIdemo.model.StatusPagamento;
-import com.example.FullAPIdemo.model.dto.web.AtualizarStatusRequest;
-import com.example.FullAPIdemo.model.dto.web.EmpresaResponse;
-import com.example.FullAPIdemo.model.dto.web.LeadRequest;
-import com.example.FullAPIdemo.model.entity.LeadComercial;
-import com.example.FullAPIdemo.model.entity.Marmiteria;
+import com.example.FullAPIdemo.model.*;
+import com.example.FullAPIdemo.model.dto.web.*;
+import com.example.FullAPIdemo.model.entity.*;
 import com.example.FullAPIdemo.repository.*;
 import com.example.FullAPIdemo.security.PasswordService;
 import jakarta.validation.Validation;
@@ -18,56 +13,20 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
 class LeadServiceTest {
-    private final LeadComercialRepository leads = mock(LeadComercialRepository.class);
-    private final LeadHistoricoRepository historicos = mock(LeadHistoricoRepository.class);
-    private final MarmiteriaRepository marmiterias = mock(MarmiteriaRepository.class);
-    private final PasswordService passwords = mock(PasswordService.class);
-    private final EmailService emails = mock(EmailService.class);
-    private final LeadService service = new LeadService(leads, historicos, marmiterias, passwords, emails, "test@example.com");
-
-    private LeadRequest request(String telefone, String cep) {
-        return new LeadRequest("Restaurante Teste", "", "teste@example.com", telefone, "Responsavel", cep, "123", "");
-    }
-
-    @Test void registrationStoresCepNumberAndFormattedTelephone() throws Exception {
-        when(leads.findFirstByEmailIgnoreCaseOrderByCreatedAtDesc(anyString())).thenReturn(Optional.empty());
-        when(leads.save(any())).thenAnswer(inv -> { LeadComercial l = inv.getArgument(0); Field id = LeadComercial.class.getDeclaredField("id"); id.setAccessible(true); id.set(l, 1L); return l; });
-        service.registrar(request("11987654321", "01310-100"));
-        ArgumentCaptor<LeadComercial> captor = ArgumentCaptor.forClass(LeadComercial.class);
-        verify(leads).save(captor.capture());
-        assertEquals("(11) 98765-4321", captor.getValue().getTelefone());
-        assertEquals("01310100", captor.getValue().getCep());
-        assertEquals("123", captor.getValue().getNumero());
-    }
-
-    @Test void liberationCopiesCepAndNumberToMarmiteria() {
-        LeadComercial lead = new LeadComercial();
-        lead.setEmail("teste@example.com"); lead.setNomeLoja("Restaurante Teste");
-        lead.setCep("01310100"); lead.setNumero("123");
-        lead.setStatusComercial(StatusComercial.VENDIDO); lead.setStatusPagamento(StatusPagamento.CONFIRMADO);
-        when(leads.findById(1L)).thenReturn(Optional.of(lead));
-        when(marmiterias.findFirstByEmailIgnoreCase(anyString())).thenReturn(Optional.empty());
-        when(passwords.hash(anyString())).thenReturn("hashed");
-        when(historicos.findByLeadIdOrderByCreatedAtDesc(1L)).thenReturn(List.of());
-        service.atualizarAcesso(1L, new AtualizarStatusRequest("ATIVO", null), "admin@example.com");
-        assertEquals("01310100", lead.getMarmiteria().getCep());
-        assertEquals("123", lead.getMarmiteria().getNumero());
-        assertEquals("01310100", EmpresaResponse.of(lead, List.of()).cep());
-        assertEquals("123", EmpresaResponse.of(lead, List.of()).numero());
-    }
-
-    @Test void validatesCepAndTelephoneWithDdd() {
-        try (var factory = Validation.buildDefaultValidatorFactory()) {
-            var validator = factory.getValidator();
-            assertTrue(validator.validate(request("(11) 98765-4321", "01310-100")).isEmpty());
-            assertFalse(validator.validate(request("987654321", "01310100")).isEmpty());
-            assertFalse(validator.validate(request("11987654321", "01310")).isEmpty());
-        }
-    }
-
-    @Test void commercialResponseDoesNotExposeEstablishmentType() {
-        assertTrue(java.util.Arrays.stream(EmpresaResponse.class.getRecordComponents()).noneMatch(c -> c.getName().equals("tipoEstabelecimento")));
-    }
+ private final LeadComercialRepository leads=mock(LeadComercialRepository.class);
+ private final LeadHistoricoRepository historicos=mock(LeadHistoricoRepository.class);
+ private final MarmiteriaRepository marmiterias=mock(MarmiteriaRepository.class);
+ private final PasswordService passwords=mock(PasswordService.class);
+ private final EmailService emails=mock(EmailService.class);
+ private final LeadService service=new LeadService(leads,historicos,marmiterias,passwords,emails,"test@example.com");
+ private LeadRequest request(String telefone,String cep){return new LeadRequest("Restaurante Teste","","teste@example.com",telefone,"Responsavel",cep,"123","","Avenida Paulista","Bela Vista","Sao Paulo","SP");}
+ @Test void registrationStoresCepNumberAndFormattedTelephone() throws Exception {when(leads.findFirstByEmailIgnoreCaseOrderByCreatedAtDesc(anyString())).thenReturn(Optional.empty());when(leads.save(any())).thenAnswer(inv->{LeadComercial l=inv.getArgument(0);Field id=LeadComercial.class.getDeclaredField("id");id.setAccessible(true);id.set(l,1L);return l;});service.registrar(request("11987654321","01310-100"));var captor=ArgumentCaptor.forClass(LeadComercial.class);verify(leads).save(captor.capture());assertEquals("(11) 98765-4321",captor.getValue().getTelefone());assertEquals("01310100",captor.getValue().getCep());assertEquals("123",captor.getValue().getNumero());}
+ @Test void liberationCopiesCepAndNumberToMarmiteria(){LeadComercial lead=new LeadComercial();lead.setEmail("teste@example.com");lead.setNomeLoja("Restaurante Teste");lead.setCep("01310100");lead.setNumero("123");lead.setRua("Avenida Paulista");lead.setStatusComercial(StatusComercial.VENDIDO);lead.setStatusPagamento(StatusPagamento.CONFIRMADO);when(leads.findById(1L)).thenReturn(Optional.of(lead));when(marmiterias.findFirstByEmailIgnoreCase(anyString())).thenReturn(Optional.empty());when(passwords.hash(anyString())).thenReturn("hashed");when(historicos.findByLeadIdOrderByCreatedAtDesc(1L)).thenReturn(List.of());service.atualizarAcesso(1L,new AtualizarStatusRequest("ATIVO",null),"admin@example.com");assertEquals("01310100",lead.getMarmiteria().getCep());assertEquals("123",lead.getMarmiteria().getNumero());assertEquals("Avenida Paulista",lead.getMarmiteria().getRua());assertEquals("01310100",EmpresaResponse.of(lead,List.of()).cep());assertEquals("123",EmpresaResponse.of(lead,List.of()).numero());}
+ @Test void validatesCepAndTelephoneWithDdd(){try(var factory=Validation.buildDefaultValidatorFactory()){var validator=factory.getValidator();assertTrue(validator.validate(request("(11) 98765-4321","01310-100")).isEmpty());assertFalse(validator.validate(request("987654321","01310100")).isEmpty());assertFalse(validator.validate(request("11987654321","01310")).isEmpty());}}
+ @Test void resetReplacesSharedPasswordWithHashAndNeverWritesRawPasswordToHistory(){LeadComercial l=new LeadComercial();Marmiteria m=new Marmiteria();m.setSenha("old");m.setEmail("account@example.com");l.setMarmiteria(m);when(leads.findById(1L)).thenReturn(Optional.of(l));when(historicos.findByLeadIdOrderByCreatedAtDesc(1L)).thenReturn(List.of());PasswordService real=new PasswordService();when(passwords.hash(anyString())).thenAnswer(inv->real.hash(inv.getArgument(0)));var response=service.redefinirSenha(1L,"admin@example.com");assertEquals(14,response.senhaProvisoria().length());assertTrue(real.matches(response.senhaProvisoria(),m.getSenha()));assertFalse(real.matches("old",m.getSenha()));assertNotEquals(response.senhaProvisoria(),m.getSenha());assertEquals("account@example.com",response.emailAcesso());var history=ArgumentCaptor.forClass(LeadHistorico.class);verify(historicos).save(history.capture());assertFalse(history.getValue().getDescricao().contains(response.senhaProvisoria()));}
+ @Test void resetRequiresAnExistingAccount(){when(leads.findById(1L)).thenReturn(Optional.of(new LeadComercial()));assertThrows(org.springframework.web.server.ResponseStatusException.class,()->service.redefinirSenha(1L,"admin"));verifyNoInteractions(passwords);}
+ @Test void importsExistingAccountsOnceWithoutInventingPaymentOrChangingPassword(){Marmiteria m=new Marmiteria();m.setId(7L);m.setNome("Antiga");m.setEmail("old@example.com");m.setSenha("original");when(marmiterias.findAll()).thenReturn(List.of(m));when(leads.findByMarmiteriaId(7L)).thenReturn(Optional.empty());when(leads.findByEmailIgnoreCase(anyString())).thenReturn(List.of());assertEquals(1,service.sincronizarMarmiterias().get("importadas"));var captor=ArgumentCaptor.forClass(LeadComercial.class);verify(leads).save(captor.capture());LeadComercial l=captor.getValue();assertSame(m,l.getMarmiteria());assertEquals("original",m.getSenha());assertEquals(StatusComercial.CADASTRO_EXISTENTE,l.getStatusComercial());assertEquals(StatusPagamento.NAO_INFORMADO,l.getStatusPagamento());assertEquals(StatusAcesso.ATIVO,l.getStatusAcesso());when(leads.findByMarmiteriaId(7L)).thenReturn(Optional.of(l));assertEquals(0,service.sincronizarMarmiterias().get("importadas"));verify(leads,times(1)).save(any());verifyNoInteractions(passwords);}
+ @Test void adminAddressUpdatePersistsInSharedAccount(){LeadComercial l=new LeadComercial();Marmiteria m=new Marmiteria();l.setMarmiteria(m);when(leads.findById(1L)).thenReturn(Optional.of(l));when(historicos.findByLeadIdOrderByCreatedAtDesc(1L)).thenReturn(List.of());var result=service.atualizarEndereco(1L,new EnderecoRequest("01310-100","42","Paulista","Bela Vista","Sao Paulo","sp"),"admin");assertEquals("01310100",m.getCep());assertEquals("42",m.getNumero());assertEquals("Paulista",result.rua());assertEquals("SP",m.getUf());verify(marmiterias).save(m);}
+ @Test void commercialResponseDoesNotExposeEstablishmentType(){assertTrue(java.util.Arrays.stream(EmpresaResponse.class.getRecordComponents()).noneMatch(c->c.getName().equals("tipoEstabelecimento")));}
 }
